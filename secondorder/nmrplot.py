@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .nmrmath import dnmr_AB, d2s_func
+from secondorder.nmrmath import dnmr_AB, d2s_func
 
 
 def lorentz(v, v0, T2):

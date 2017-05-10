@@ -9,14 +9,14 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,\
     NavigationToolbar2TkAgg
 # implement the default mpl key bindings
 from matplotlib.figure import Figure
-from secondorder.model.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
+from secondorder.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
 from secondorder.nspin import get_reich_default
 from tkinter import *
 from secondorder.GUI.guimixin import GuiMixin  # mix-in class that provides dev
 # tools
-from secondorder.model.nmrmath import AB, AB2, ABX, ABX3, AAXX, first_order, \
+from secondorder.nmrmath import AB, AB2, ABX, ABX3, AAXX, first_order, \
     AABB
-from secondorder.model.nmrmath import nspinspec
+from secondorder.nmrmath import nspinspec
 from collections import deque
 
 up_arrow = u"\u21e7"
