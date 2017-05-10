@@ -45,19 +45,19 @@ class GuiMixin:
         myclass = self.__class__            # instance's (lowest) class object
         myclass(new, *args)                 # attach/run instance to new window
 
-    def spawn(self, pycmdline, wait=False):
-        if not wait:                                    # start new process
-            PortableLauncher(pycmdline, pycmdline)()    # run Python program
-        else:
-            System(pycmdline, pycmdline)()              # wait for it to exit
+    # def spawn(self, pycmdline, wait=False):
+    #     if not wait:                                    # start new process
+    #         PortableLauncher(pycmdline, pycmdline)()    # run Python program
+    #     else:
+    #         System(pycmdline, pycmdline)()              # wait for it to exit
 
-    def browser(self, filename):
-        new = Toplevel()                                # make new window
-        view = ScrolledText(new, file=filename)         # Text with Scrollbar
-        view.text.config(height=30, width=85)           # config Text in Frame
-        view.text.config(font=('courier', 10, 'normal'))  # use fixed-width font
-        new.title("Text Viewer")                        # set window mgr attrs
-        new.iconname("browser")                         # file text added auto
+    # def browser(self, filename):
+    #     new = Toplevel()                                # make new window
+    #     view = ScrolledText(new, file=filename)         # Text with Scrollbar
+    #     view.text.config(height=30, width=85)           # config Text in Frame
+    #     view.text.config(font=('courier', 10, 'normal'))  # use fixed-width font
+    #     new.title("Text Viewer")                        # set window mgr attrs
+    #     new.iconname("browser")                         # file text added auto
 
 
 if __name__ == '__main__':
