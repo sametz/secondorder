@@ -8,11 +8,33 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 from tkinter import ttk
 
 
+class MPLgraph(FigureCanvasTkAgg):
+    def __init__(self, f, master=None, **options):
+        FigureCanvasTkAgg.__init__(self, f, master, **options)
+        self.f = f
+        self.a = f.add_subplot(111)
+        # self.a.invert_xaxis()
+        self.show()
+        self.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.toolbar = NavigationToolbar2TkAgg(self, master)
+        self.toolbar.update()
+
+    def plot(self, x, y):
+        self.a.plot(x, y)
+        self.f.canvas.draw()  # DRAW IS CRITICAL TO REFRESH
+
+    def clear(self):
+        self.a.clear()
+        self.f.canvas.draw()
+
+
 class View(tk.Frame):
 
     def __init__(self, parent, controller, **options):
         tk.Frame.__init__(self, parent, **options)
         self.pack()
+
+        self.controller = controller
 
         ttk.Label(self, text="base").pack(side=tk.LEFT)
         self.integer_entry = ttk.Entry(self, validate='key')
@@ -44,6 +66,10 @@ class View(tk.Frame):
         self.integer_entry['invalidcommand'] = 'bell'
         self.exponent_entry['invalidcommand'] = 'bell'
 
+        self.f = mpl.figure.Figure(figsize=(5, 4), dpi=100)
+        self.canvas = MPLgraph(self.f, parent)
+        self.canvas._tkcanvas.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.BOTH)
+
     @staticmethod
     def is_number(entry):
         """
@@ -63,11 +89,13 @@ class View(tk.Frame):
 
     def on_return(self, event):
         if self.entry_is_changed():
+            self.controller.update_view()
             print('values are now: ', self.integer.get(), self.exponent.get())
         event.widget.tk_focusNext().focus()
 
     def on_tab(self):
         if self.entry_is_changed():
+            self.controller.update_view()
             print('values are now: ', self.integer.get(), self.exponent.get())
 
 
