@@ -1,13 +1,31 @@
+"""
+The controller is to be executed as the main app in this MVC pattern. It 
+calls on a model and a viewer and passes commands and data between them.
+
+This demonstration assumes a tkinter view, and knowledge of its structure. It
+might be a useful exercise to try and design a controller that accepts 
+different GUIs, or even different models.
+"""
+
 import tkinter as tk
 from view import View
 from model import Model
 
 
 class Controller:
+    """ 
+    A controller that requires Model() and View() objects with compatible 
+    interfaces.
+    
+    
+    """
+
     def __init__(self, root):
+        """Controller must be instantiated with a tkinter.Tk() object (root).
+        """
         self.model = Model()
         self.view = View(root, self)
-        self.view.integer.set('1')
+        self.view.base.set('1')
         self.view.exponent.set('2')
         self.update_view()
 
@@ -17,7 +35,7 @@ class Controller:
         self.update_view_plot()
 
     def update_view_data(self):
-        self.integer = float(self.view.integer.get())
+        self.integer = float(self.view.base.get())
         self.exponent = float(self.view.exponent.get())
 
     def get_model_data(self, base, exponent):

@@ -386,7 +386,7 @@ class VarBox(Frame):
     in a popup.
     Looking ahead: trick may be linking their contents with the calls to
     nmrmath. Also, need to make sure floats, not ints, are returned. Can
-    change the is_number routine so that if integer entered, replaced with
+    change the is_number routine so that if base entered, replaced with
     float?
     Inputs:
     -text: appears above the entry box
@@ -778,7 +778,7 @@ class IntBox(Frame):
     @staticmethod
     def is_int(entry):
         """
-        tests to see if entry string can be converted to integer
+        tests to see if entry string can be converted to base
         """
         if not entry:
             return True  # Empty string: OK if entire entry deleted
@@ -801,7 +801,7 @@ class IntBox(Frame):
 
     def to_dict(self):
         """
-        Converts entry to integer, and stores data in container's vars
+        Converts entry to base, and stores data in container's vars
         dictionary.
         """
         if not self.value.get():  # if entry left blank,
