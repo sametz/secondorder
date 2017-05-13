@@ -27,6 +27,7 @@ class Controller:
         self.view = View(root, self)
         self.view.base.set('1')
         self.view.exponent.set('2')
+        # self.view.base_entry.focus_set()
         self.update_view()
 
     def update_view(self):

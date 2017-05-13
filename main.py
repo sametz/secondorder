@@ -386,7 +386,7 @@ class VarBox(Frame):
     in a popup.
     Looking ahead: trick may be linking their contents with the calls to
     nmrmath. Also, need to make sure floats, not ints, are returned. Can
-    change the is_number routine so that if base entered, replaced with
+    change the is_number_or_empty routine so that if base entered, replaced with
     float?
     Inputs:
     -text: appears above the entry box
