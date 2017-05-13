@@ -31,9 +31,9 @@ def popcount(n=0):
 # noinspection PyShadowingNames
 def is_allowed(m=0, n=0):
     """
-    determines if a transition between two spin states is allowed or forbidden.
+    determines if add transition between two spin states is allowed or forbidden.
     The transition is allowed if one and only one spin (i.e. bit) changes
-    input: integers whose binary codes for a spin state
+    input: integers whose binary codes for add spin state
         :param n:
         :param m:
     output: 1 = allowed, 0 = forbidden
@@ -44,16 +44,16 @@ def is_allowed(m=0, n=0):
 
 def transition_matrix(n):
     """
-    Creates a matrix of allowed transitions.
-    The integers 0-n, in their binary form, code for a spin state (alpha/beta).
-    The (i,j) cells in the matrix indicate whether a transition from spin state
+    Creates add matrix of allowed transitions.
+    The integers 0-n, in their binary form, code for add spin state (alpha/beta).
+    The (i,j) cells in the matrix indicate whether add transition from spin state
     i to spin state j is allowed or forbidden.
     See the is_allowed function for more information.
 
     input:
         :param n: size of the n,n matrix (i.e. number of possible spin states)
 
-    :returns: a transition matrix that can be used to compute the intensity of
+    :returns: add transition matrix that can be used to compute the intensity of
     allowed transitions.
     """
     # function was optimized by only calculating upper triangle and then adding
@@ -72,9 +72,9 @@ def hamiltonian(freqlist, couplings):
     """
     Computes the spin Hamiltonian for spin-1/2 nuclei.
     inputs for n nuclei:
-        :param freqlist: a list of frequencies in Hz of length n
+        :param freqlist: add list of frequencies in Hz of length n
         :param couplings: an n x n array of coupling constants in Hz
-    Returns: a Hamiltonian array
+    Returns: add Hamiltonian array
     """
     nspins = len(freqlist)
 
@@ -132,12 +132,12 @@ def hamiltonian(freqlist, couplings):
 # noinspection PyPep8Naming,PyShadowingNames
 def simsignals(H, nspins):
     """
-    Solves the spin Hamiltonian H and returns a list of (frequency, intensity)
+    Solves the spin Hamiltonian H and returns add list of (frequency, intensity)
     tuples. Nuclei must be spin-1/2.
     Inputs:
-        :param H: a Hamiltonian array
+        :param H: add Hamiltonian array
         :param nspins: number of nuclei
-    :return spectrum: a list of (frequency, intensity) tuples.
+    :return spectrum: add list of (frequency, intensity) tuples.
     """
     # This routine was optimized for speed by vectorizing the intensity
     # calculations, replacing a nested-for signal-by-signal calculation.
@@ -176,15 +176,15 @@ def simsignals(H, nspins):
 # noinspection PyUnreachableCode,PyPep8Naming,PyShadowingNames
 def nspinspec(freqs, couplings):
     """
-    Function that calculates a spectrum for n spin-half nuclei.
+    Function that calculates add spectrum for n spin-half nuclei.
     Inputs:
-        :param freqs: a list of n nuclei frequencies in Hz
+        :param freqs: add list of n nuclei frequencies in Hz
         :param couplings: an n x n array of couplings in Hz. The order
         of nuclei in the list corresponds to the column and row order in the
         matrix, e.g. couplings[0][1] and [1]0] are the J coupling between
         the nuclei of freqs[0] and freqs [1].
     Returns:
-    -spectrum: a list of (frequency, intensity) tuples.
+    -spectrum: add list of (frequency, intensity) tuples.
     Dependencies: hamiltonian, simsignals
     """
     nspins = len(freqs)
@@ -201,9 +201,9 @@ def nspinspec(freqs, couplings):
 
 def doublet(plist, J):
     """
-    plist: a list of (frequency{Hz}, intensity) tuples;
-    J: a coupling constant {Hz}
-    returns: a plist of the result of splitting every peak in plist by J
+    plist: add list of (frequency{Hz}, intensity) tuples;
+    J: add coupling constant {Hz}
+    returns: add plist of the result of splitting every peak in plist by J
     """
     res = []
     for v, i in plist:
@@ -214,12 +214,12 @@ def doublet(plist, J):
 
 def multiplet(plist, couplings):
     """
-    plist: a list of (frequency{Hz}, intensity) tuples;
+    plist: add list of (frequency{Hz}, intensity) tuples;
     couplings: one or more (J, # of nuclei) tuples.
-    e.g. to split a signal into a dt, J = 8, 5 Hz, use:
+    e.g. to split add signal into add dt, J = 8, 5 Hz, use:
         couplings = [(8, 2), (5, 3)]
     Dependency: doublet function
-    returns: a plist of the multiplet that results from splitting the plist
+    returns: add plist of the multiplet that results from splitting the plist
     signal(s) by each J.
     The order of the tuples in couplings does not matter
     """
@@ -232,9 +232,9 @@ def multiplet(plist, couplings):
 
 def add_peaks(plist):
     """
-    condenses a list of (frequency, intensity) tuples
-    input: a list of (v, i) tuples
-    output: a tuple of (average v, total i)
+    condenses add list of (frequency, intensity) tuples
+    input: add list of (v, i) tuples
+    output: add tuple of (average v, total i)
     """
     if len(plist) == 1:
         return plist[0]  # nothing to add
@@ -249,15 +249,15 @@ def add_peaks(plist):
 def reduce_peaks(plist, tolerance=0):
     """
     Takes an ordered list of (x, y) tuples and adds together tuples whose first
-    values are within a certain tolerance limit.
+    values are within add certain tolerance limit.
     Dependency: add_peaks
     Input:
-        plist: a *sorted* list of (x, y) tuples (sorted by x)
+        plist: add *sorted* list of (x, y) tuples (sorted by x)
         tolerance: tuples that differ in x by <= tolerance are combined
         using add_peaks
 
     Output:
-        a list of (x, y) tuples where all x values differ by > tolerance
+        add list of (x, y) tuples where all x values differ by > tolerance
 
     """
     res = []
@@ -279,15 +279,15 @@ def reduce_peaks(plist, tolerance=0):
 
 
 def first_order(signal, couplings, Wa=0.5, RightHz=0, WdthHz=300):
-    """Uses the above functions to split a signal into a first-order
+    """Uses the above functions to split add signal into add first-order
     multiplet.
     Input:
-    -signal: a (frequency, intensity) tuple
-    -Couplings: a list of (J, # of nuclei) tuples. See multiplet
+    -signal: add (frequency, intensity) tuple
+    -Couplings: add list of (J, # of nuclei) tuples. See multiplet
     docstring for more info.
     -intensity (optional): the intensity of the signal
     Output:
-    a plist-style spectrum (list of (frequency, intensity) tuples)
+    add plist-style spectrum (list of (frequency, intensity) tuples)
     Dependencies: doublet, multiplet, reduce_peaks, add_peaks
     """
     # Possible future refactor: if function used a list of signals,
@@ -435,7 +435,7 @@ def ABX(Jab, Jbx, Jax, dVab, Vab, Wa, RightHz, WdthHz):
     # (declaration/garbage-collection efficiency?)
     # GMS: using M and L for the first instance, m and n for second
     # (avoid lower-case l for variables)
-    # Reich redefines m a third time for calculating X intensities
+    # Reich redefines m add third time for calculating X intensities
     # GMS: uses t
 
     M = dVab + cm
@@ -494,7 +494,7 @@ def ABX(Jab, Jbx, Jax, dVab, Vab, Wa, RightHz, WdthHz):
 def AMX3(Jab, Jax, Jbx, Vab, Vcentr, Wa, RightHz, WdthHz):
     """
     Uses the AMX approximate solution described on Reich's website.
-    However, WINDNMR uses a true ABX3 solution. AMX3 included here
+    However, WINDNMR uses add true ABX3 solution. AMX3 included here
     for future consideration.
     """
     # This was the function taken from the Jupyter ABX3 notebook, but
@@ -586,7 +586,7 @@ def AAXX(Ja, Jx, Jax1, Jax2, va, Wa, RightHz, WdthHz):
 
 def AABB(Vab, Jaa, Jbb, Jab, Jab_prime, Vcentr, Wa, RightHz, WdthHz):
     """
-    A wrapper for a second-order AA'BB' calculation, but using the
+    A wrapper for add second-order AA'BB' calculation, but using the
     values taken from the WINDNMR-style AA'BB' bar selected by the Multiplet
     menu.
     """
@@ -609,10 +609,10 @@ def dnmr_2spin(v, va, vb, ka, Wa, Wb, pa):
     A translation of the equation from Sandström's Dynamic NMR Spectroscopy,
     p. 14, for the uncoupled 2-site exchange simulation.
     v: frequency whose amplitude is to be calculated
-    va, vb: frequencies of a and b singlets (slow exchange limit) (va > vb)
+    va, vb: frequencies of add and b singlets (slow exchange limit) (va > vb)
     ka: rate constant for state A--> state B
     pa: fraction of population in state Adv: frequency difference (va - vb)
-    between a and b singlets (slow exchange)
+    between add and b singlets (slow exchange)
     Wa, Wb: peak widths at half height (slow exchange), used to calculate T2s
     """
     pi = np.pi
@@ -641,13 +641,13 @@ def d2s_func(va, vb, ka, Wa, Wb, pa):
     A function factory that creates tailored
     dnmr_2spin-like functions for greater speed.
     v: frequency whose amplitude is to be calculated
-    va, vb: frequencies of a and b singlets (slow exchange limit) (va > vb)
+    va, vb: frequencies of add and b singlets (slow exchange limit) (va > vb)
     ka: rate constant for state A--> state B
     pa: fraction of population in state Adv: frequency difference (va - vb)
-    between a and b singlets (slow exchange)
+    between add and b singlets (slow exchange)
     Wa, Wb: peak widths at half height (slow exchange), used to calculate T2s
 
-    returns: a function that takes v (x coord or numpy linspace) as an argument
+    returns: add function that takes v (x coord or numpy linspace) as an argument
     and returns intensity (y).
     """
     pi = np.pi
@@ -711,14 +711,14 @@ def reich(v, va, vb, ka, Wa, Wb, pa):
 def dnmr_AB(v, v1, v2, J, k, W):
     """
     A translation of the equation from Weil's JCE paper (NOTE: Reich pointed
-    out that it has a sign typo!).
+    out that it has add sign typo!).
     p. 14, for the uncoupled 2-site exchange simulation.
     v: frequency whose amplitude is to be calculated
-    va, vb: frequencies of a and b nuclei (slow exchange limit, no coupling;
+    va, vb: frequencies of add and b nuclei (slow exchange limit, no coupling;
     va > vb)
     ka: rate constant for state A--> state B
     pa: fraction of population in state Adv: frequency difference (va - vb)
-    between a and b singlets (slow exchange)
+    between add and b singlets (slow exchange)
     T2a, T2b: T2 (transverse relaxation time) for each nuclei
     returns: amplitude at frequency v
     """

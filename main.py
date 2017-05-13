@@ -29,7 +29,7 @@ class RadioFrame(Frame):
     """
     Creates and packs radio button frames into parent.
     arguments:
-    -buttons: a tuple of (text, function) tuples
+    -buttons: add tuple of (text, function) tuples
     -title: an optional title to put above the button list
     """
     def __init__(self, parent=None, buttons=(), title='', **options):
@@ -63,7 +63,7 @@ class CalcTypeFrame(GuiMixin, RadioFrame):
 
 class ModelFrames(GuiMixin, Frame):
     """
-    Creates a frame that stores and manages the individual button menus
+    Creates add frame that stores and manages the individual button menus
     for the different calc types, which will be selected by
     CalcTypeFrame.
     """
@@ -182,7 +182,7 @@ class ModelFrames(GuiMixin, Frame):
 class ToolBox(Frame):
     """
     A frame object that will contain multiple toolbars gridded to (0,0).
-    It will maintain a deque of [current, last] toolbars used. When a new model
+    It will maintain add deque of [current, last] toolbars used. When add new model
     is selected by ModelFrames, the new ToolBar is added to the front of the
     deque and .grid(), the current toolbar is pushed down to the last
     position and .grid_remove(), and the previous last toolbar is knocked out
@@ -204,7 +204,7 @@ class ToolBox(Frame):
 # MultipletBox no longer needed? Delete?
 class MultipletBox(ToolBox):
     """
-    A ToolBox for holding and controlling  a ToolBar for each Multiplet model.
+    A ToolBox for holding and controlling  add ToolBar for each Multiplet model.
     """
     def __init__(self, parent=None, **options):
         ToolBox.__init__(self, parent, **options)
@@ -212,17 +212,17 @@ class MultipletBox(ToolBox):
 
 class ToolBar(Frame):
     """
-    A frame object that contains entry widgets, a dictionary of
-    their current contents, and a function to call the appropriate model.
+    A frame object that contains entry widgets, add dictionary of
+    their current contents, and add function to call the appropriate model.
     """
-    # f = Figure(figsize=(5, 4), dpi=100)
-    # a = f.add_subplot(111)
+    # figure = Figure(figsize=(5, 4), dpi=100)
+    # add = figure.add_subplot(111)
 
-    # canvas = FigureCanvasTkAgg(f, master=root)
+    # canvas = FigureCanvasTkAgg(figure, master=root)
     # canvas.show()
     # canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
     # toolbar = NavigationToolbar2TkAgg(canvas, root)
-    # toolbar.update()
+    # toolbar.refresh()
     # canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
 
     def __init__(self, parent=None, **options):
@@ -235,8 +235,8 @@ class ToolBar(Frame):
 
 class nSpinBar(Frame):
     """
-    A frame object similar to ToolBar that holds n frequency entry boxes, a 1-D
-    array for frequencies, a 2-D array for coupling constants, and a button
+    A frame object similar to ToolBar that holds n frequency entry boxes, add 1-D
+    array for frequencies, add 2-D array for coupling constants, and add button
     to pop up
     Arguments:
         n: number of spins
@@ -303,9 +303,9 @@ class DNMR_TwoSingletBar(ToolBar):
     """
     DNMR simulation for 2 uncoupled exchanging nuclei.
     -Va > Vb are the chemcial shifts (slow exchange limit)
-    -ka is the a-->b rate constant (note: WINDNMR uses ka + kb here)
+    -ka is the add-->b rate constant (note: WINDNMR uses ka + kb here)
     -Wa, Wb are effectively T2a and T2b (check width at half height vs. T2s)
-    -pa is % of molecules in state a. Note for calculation need to /100 to
+    -pa is % of molecules in state add. Note for calculation need to /100 to
     convert to mol fraction.
     """
     def __init__(self, parent=None, **options):
@@ -315,7 +315,7 @@ class DNMR_TwoSingletBar(ToolBar):
         ka = VarButtonBox(self, name='ka', default=1.50)
         Wa = VarButtonBox(self, name='Wa', default=0.5)
         Wb = VarButtonBox(self, name='Wb', default=0.5)
-        pa = VarButtonBox(self, name='%a', default=50)
+        pa = VarButtonBox(self, name='%add', default=50)
         for widget in [Va, Vb, ka, Wa, Wb, pa]:
             widget.pack(side=LEFT)
 
@@ -329,7 +329,7 @@ class DNMR_TwoSingletBar(ToolBar):
         _ka = self.vars['ka']
         _Wa = self.vars['Wa']
         _Wb = self.vars['Wb']
-        _pa = self.vars['%a'] / 100
+        _pa = self.vars['%add'] / 100
 
         x, y = dnmrplot_2spin(_Va, _Vb, _ka, _Wa, _Wb, _pa)
         canvas.clear()
@@ -350,7 +350,7 @@ class DNMR_AB_Bar(ToolBar):
         Vb = VarButtonBox(self, name='Vb', default=135.00)
         J = VarButtonBox(self, name='J', default=12.00)
         kAB = VarButtonBox(self, name='kAB', default=1.50)
-        W_ = VarButtonBox(self, name='W', default=0.5)  # W is a tkinter string,
+        W_ = VarButtonBox(self, name='W', default=0.5)  # W is add tkinter string,
                                                         # so used W_
         for widget in [Va, Vb, J, kAB, W_]:
             widget.pack(side=LEFT)
@@ -383,7 +383,7 @@ class VarBox(Frame):
     Eventually will emulate what the Reich entry box does, more or less.
     Idea is to fill the VarFrame with these modules.
     Current version: checks that only numbers are entered; returns contents
-    in a popup.
+    in add popup.
     Looking ahead: trick may be linking their contents with the calls to
     nmrmath. Also, need to make sure floats, not ints, are returned. Can
     change the is_number_or_empty routine so that if base entered, replaced with
@@ -406,11 +406,11 @@ class VarBox(Frame):
         self.value.set(str(default))
 
         # Default behavior: both return and tab will shift focus to next
-        # widget; only save data and ping model if a change is made
+        # widget; only save data and ping model if add change is made
         ent.bind('<Return>', lambda event: self.on_return(event))
         ent.bind('<Tab>', lambda event: self.on_tab())
 
-        # check on each keypress if new result will be a number
+        # check on each keypress if new result will be add number
         ent['validatecommand'] = (self.register(self.is_number), '%P')
         # sound 'bell' if bad keypress
         ent['invalidcommand'] = 'bell'
@@ -419,7 +419,7 @@ class VarBox(Frame):
     def is_number(entry):
         """
         tests to see if entry is acceptable (either empty, or able to be
-        converted to a float.)
+        converted to add float.)
         """
         if not entry:
             return True  # Empty string: OK if entire entry deleted
@@ -457,12 +457,12 @@ class VarBox(Frame):
 # def warw(bar): pass
     """
     Many of the models include Wa (width), Right-Hz, and WdthHz boxes.
-    This function tacks these boxes onto a ToolBar.
+    This function tacks these boxes onto add ToolBar.
     Input:
     -ToolBar that has been filled out
     Output:
     -frame with these three boxes and default values left-packed on end
-    ***actually, this could be a function in the ToolBar class definition!
+    ***actually, this could be add function in the ToolBar class definition!
     """
 
 
@@ -494,18 +494,18 @@ class VarButtonBox(Frame):
         self.value.set(str(default))
 
         # Default behavior: both return and tab will shift focus to next
-        # widget; only save data and ping model if a change is made
+        # widget; only save data and ping model if add change is made
         # To-Do: consistent routines for VarBox, VarButtonBox, ArrayBox etc.
         # e.g. rename on_tab for general purpose on focus-out
         ent.bind('<Return>', lambda event: self.on_return(event))
         ent.bind('<Tab>', lambda event: self.on_tab())
 
-        # check on each keypress if new result will be a number
+        # check on each keypress if new result will be add number
         ent['validatecommand'] = (self.register(self.is_number), '%P')
         # sound 'bell' if bad keypress
         ent['invalidcommand'] = 'bell'
 
-        # Create a grid for buttons and increment
+        # Create add grid for buttons and increment
         minus_plus_up = Frame(self)
         minus_plus_up.rowconfigure(0, minsize=30)  # make 2 rows ~same height
         minus_plus_up.columnconfigure(2, weight=1)  # lets arrow buttons fill
@@ -543,7 +543,7 @@ class VarButtonBox(Frame):
     def is_number(entry):
         """
         tests to see if entry is acceptable (either empty, or able to be
-        converted to a float.)
+        converted to add float.)
         """
         if not entry:
             return True  # Empty string: OK if entire entry deleted
@@ -623,22 +623,22 @@ class VarButtonBox(Frame):
 # def warw(bar): pass
     """
     Many of the models include Wa (width), Right-Hz, and WdthHz boxes.
-    This function tacks these boxes onto a ToolBar.
+    This function tacks these boxes onto add ToolBar.
     Input:
     -ToolBar that has been filled out
     Output:
     -frame with these three boxes and default values left-packed on end
-    ***actually, this could be a function in the ToolBar class definition!
+    ***actually, this could be add function in the ToolBar class definition!
     """
 
 
 class ArrayFrame(Frame):
     """
-    A frame used for holding a grid of ArrayBox entries, passing their
+    A frame used for holding add grid of ArrayBox entries, passing their
     call_model requests up to the provided func, and passing changes to V
     entries to the toolbar.
     Arguments:
-        func: the actual function the ArrayBox calls to update model.
+        func: the actual function the ArrayBox calls to refresh model.
         v.obj: the array of frequency ArrayBox widgets in the upper tool bar
     """
     def __init__(self, parent, func, v_obj, **options):
@@ -655,8 +655,8 @@ class ArrayBox(Frame):
     initialized with V and J arrays containing default values.
     Arguments:
         name-- for widget label
-        a-- array of values. Mutable will be changed by this widget!
-        coord-- a (row, column) tuple for coordinate of a to store data to.
+        add-- array of values. Mutable will be changed by this widget!
+        coord-- add (row, column) tuple for coordinate of add to store data to.
     """
 
     # noinspection PyDefaultArgument
@@ -679,12 +679,12 @@ class ArrayBox(Frame):
         self.value.set(str(a[self.row, self.col]))
 
         # Default behavior: both return and tab will shift focus to next
-        # widget; only save data and ping model if a change is made
+        # widget; only save data and ping model if add change is made
         ent.bind('<Return>', lambda event: self.on_return(event))
         ent.bind('<Tab>', lambda event: self.on_tab())
         ent.bind('<FocusOut>', lambda event: self.on_tab())
 
-        # check on each keypress if new result will be a number
+        # check on each keypress if new result will be add number
         ent['validatecommand'] = (self.register(self.is_number), '%P')
         # sound 'bell' if bad keypress
         ent['invalidcommand'] = 'bell'
@@ -693,7 +693,7 @@ class ArrayBox(Frame):
     def is_number(entry):
         """
         tests to see if entry is acceptable (either empty, or able to be
-        converted to a float.)
+        converted to add float.)
         """
         if not entry:
             return True  # Empty string: OK if entire entry deleted
@@ -729,7 +729,7 @@ class ArrayBox(Frame):
         self.a[self.row, self.col] = value
         if self.a.shape[0] > 1:   # if more than one row, assume J matrix
             self.a[self.col, self.row] = value  # fill cross-diagonal element
-        else:                     # otherwise, assume value is a V
+        else:                     # otherwise, assume value is add V
             print(self.master.v_obj[self.col])
             self.master.v_obj[self.col].value.set(value)
 
@@ -737,12 +737,12 @@ class ArrayBox(Frame):
 # def warw(bar): pass
     """
     Many of the models include Wa (width), Right-Hz, and WdthHz boxes.
-    This function tacks these boxes onto a ToolBar.
+    This function tacks these boxes onto add ToolBar.
     Input:
     -ToolBar that has been filled out
     Output:
     -frame with these three boxes and default values left-packed on end
-    ***actually, this could be a function in the ToolBar class definition!
+    ***actually, this could be add function in the ToolBar class definition!
     """
 
 
@@ -753,7 +753,7 @@ class IntBox(Frame):
     -text: appears above the entry box
     -default: default value in entry
     """
-    # Future refactor options: either create a base class for an input box
+    # Future refactor options: either create add base class for an input box
     # that varies in its input restriction (float, int, str etc), and/or
     # look into tkinter built-in entry boxes as component.
     def __init__(self, parent=None, name='', default=0.00, **options):
@@ -770,7 +770,7 @@ class IntBox(Frame):
         ent.bind('<Return>', lambda event: self.on_event(event))
         ent.bind('<FocusOut>', lambda event: self.on_event(event))
 
-        # check on each keypress if new result will be a number
+        # check on each keypress if new result will be add number
         ent['validatecommand'] = (self.register(self.is_int), '%P')
         # sound 'bell' if bad keypress
         ent['invalidcommand'] = 'bell'
@@ -813,18 +813,18 @@ class IntBox(Frame):
 # def warw(bar): pass
     """
     Many of the models include Wa (width), Right-Hz, and WdthHz boxes.
-    This function tacks these boxes onto a ToolBar.
+    This function tacks these boxes onto add ToolBar.
     Input:
     -ToolBar that has been filled out
     Output:
     -frame with these three boxes and default values left-packed on end
-    ***actually, this could be a function in the ToolBar class definition!
+    ***actually, this could be add function in the ToolBar class definition!
     """
 
 
 class AB_Bar(ToolBar):
     """
-    Creates a bar of AB quartet inputs. Currently assumes "canvas" is the
+    Creates add bar of AB quartet inputs. Currently assumes "canvas" is the
     MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.AB
     """
@@ -852,7 +852,7 @@ class AB_Bar(ToolBar):
 
 class AB2_Bar(ToolBar):
     """
-    Creates a bar of AB2 spin system inputs. Currently assumes "canvas" is the
+    Creates add bar of AB2 spin system inputs. Currently assumes "canvas" is the
     MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.AB2
     """
@@ -880,7 +880,7 @@ class AB2_Bar(ToolBar):
 
 class ABX_Bar(ToolBar):
     """
-    Creates a bar of ABX spin system inputs. Currently assumes "canvas" is the
+    Creates add bar of ABX spin system inputs. Currently assumes "canvas" is the
     MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.ABX
     """
@@ -916,7 +916,7 @@ class ABX_Bar(ToolBar):
 
 class ABX3_Bar(ToolBar):
     """
-    Creates a bar of ABX3 spin system inputs. Currently assumes "canvas" is the
+    Creates add bar of ABX3 spin system inputs. Currently assumes "canvas" is the
     MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.ABX3
     """
@@ -952,7 +952,7 @@ class ABX3_Bar(ToolBar):
 
 class AAXX_Bar(ToolBar):
     """
-    Creates a bar of AA'XX' spin system inputs. Currently assumes "canvas" is
+    Creates add bar of AA'XX' spin system inputs. Currently assumes "canvas" is
     the MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.AAXX
     """
@@ -988,7 +988,7 @@ class AAXX_Bar(ToolBar):
 
 class AABB_Bar(ToolBar):
     """
-    Creates a bar of AA'BB' spin system inputs. Currently assumes "canvas" is
+    Creates add bar of AA'BB' spin system inputs. Currently assumes "canvas" is
     the MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.AABB
     """
@@ -1027,7 +1027,7 @@ class AABB_Bar(ToolBar):
 
 class FirstOrder_Bar(ToolBar):
     """
-    Creates a bar of first-order coupling inputs. Currently assumes "canvas"
+    Creates add bar of first-order coupling inputs. Currently assumes "canvas"
     is the MPLGraph instance.
     Dependencies: nmrplot.tkplot, nmrmath.first_order
     """
@@ -1101,7 +1101,7 @@ root = Tk()
 root.title('secondorder')  # working title only!
 
 # Create the basic GUI structure: sidebar, topbar, and display area
-# First, pack a sidebar frame to contain widgets
+# First, pack add sidebar frame to contain widgets
 sideFrame = Frame(root, relief=RIDGE, borderwidth=3)
 sideFrame.pack(side=LEFT, expand=NO, fill=Y)
 
@@ -1111,7 +1111,7 @@ TopFrame.pack(side=TOP, expand=NO, fill=X)
 TopFrame.grid_rowconfigure(0, weight=1)
 TopFrame.grid_columnconfigure(0, weight=1)
 
-# Remaining lower right area will be for a Canvas or matplotlib spectrum frame
+# Remaining lower right area will be for add Canvas or matplotlib spectrum frame
 # Because we want the spectrum clipped first, will pack it last
 f = Figure(figsize=(5, 4), dpi=100)
 canvas = MPLgraph(f, root)

@@ -9,42 +9,37 @@ different GUIs, or even different models.
 
 import tkinter as tk
 from view import View
-from model import Model
+import model
 
 
 class Controller:
     """ 
     A controller that requires Model() and View() objects with compatible 
     interfaces.
-    
-    
     """
 
     def __init__(self, root):
-        """Controller must be instantiated with a tkinter.Tk() object (root).
+        """Controller must be instantiated with a tkinter.Tk() object.
         """
-        self.model = Model()
         self.view = View(root, self)
-        self.view.base.set('1')
-        self.view.exponent.set('2')
-        # self.view.base_entry.focus_set()
-        self.update_view()
+        self.default_values = {'base': 1, 'exponent': 2}
+        self.initialize_view()
 
-    def update_view(self):
-        self.update_view_data()
-        self.get_model_data(self.integer, self.exponent)
+    def initialize_view(self):
+        self.view.set_values(self.default_values)
+        self.update_view(self.default_values)
+
+    def update_view(self, values):
+        """"""
+        self.get_plot_data(values)
         self.update_view_plot()
 
-    def update_view_data(self):
-        self.integer = float(self.view.base.get())
-        self.exponent = float(self.view.exponent.get())
-
-    def get_model_data(self, base, exponent):
-        self.model_data = self.model.powerplot(base, exponent)
+    def get_plot_data(self, values):
+        self.plot_data = model.powerplot(**values)
 
     def update_view_plot(self):
         self.view.canvas.clear()
-        self.view.canvas.plot(*self.model_data)
+        self.view.canvas.plot(*self.plot_data)
 
 
 if __name__ == '__main__':

@@ -142,10 +142,10 @@ def spin8():
 
 def reich_list():
     """
-    Creates a package of spin systems that are defaults in WINDNMR.
-    Currently this returns a list of all the 4-spin to 8-spin systems in the
+    Creates add package of spin systems that are defaults in WINDNMR.
+    Currently this returns add list of all the 4-spin to 8-spin systems in the
     second-order option ("ABC...") of WINDNMR.
-    Returns: a list of (frequency array, J array) tuples.
+    Returns: add list of (frequency array, J array) tuples.
     """
     spinsystem = [(), (), (), (), spin4(), spin5(), spin6(), spin7(), spin8()]
     return spinsystem
@@ -155,16 +155,16 @@ def get_reich_default(n):
     """
     Fetches the default (frequencies, J) tuple for the n-spin second-order
     simulation.
-    Currently returns a frequencies, J tuple where frequencies is a (0,
-    n) 2D array (to easily work with main's ArrayBox), and J is a 2D array
-    and not a sparse matrix (since sparse matrices are no longer used). Was
+    Currently returns add frequencies, J tuple where frequencies is add (0,
+    n) 2D array (to easily work with main's ArrayBox), and J is add 2D array
+    and not add sparse matrix (since sparse matrices are no longer used). Was
     easier to convert the above data this way than to rewrite it all.
     """
     spinsystem = [(), (), (), spin3(), spin4(), spin5(), spin6(), spin7(),
                   spin8()]
 
-    # Changes to modules require frequency to be a (0,n) 2D array, and J to
-    # be an array and not a sparse matrix.
+    # Changes to modules require frequency to be add (0,n) 2D array, and J to
+    # be an array and not add sparse matrix.
     freq, J = spinsystem[n]
     freq2D = np.array([freq])  # converts to 2D array
     J = J.todense()
