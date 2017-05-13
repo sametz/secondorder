@@ -38,31 +38,25 @@ class View(tk.Frame):
 
         self.values = {}
 
-        ttk.Label(self, text="base").pack(side=tk.LEFT)
+        self.base_entry = self.add_entry('base')
+
+        #ttk.Label(self, text="base").pack(side=tk.LEFT)
         # check on each keypress if new result will be a number
-        self.base_entry = ttk.Entry(self, validate='key')
-        self.base_entry['validatecommand'] = (self.register(self.is_number_or_empty),
-                                              '%P')
-        # sound 'bell' if bad keypress
-        self.base_entry['invalidcommand'] = 'bell'
-        # self.base_entry.bind('<Return>', lambda event: self.on_return(event))
-        # self.base_entry.bind('<Tab>', lambda event: self.on_tab(event))
-        # self.base_entry.bind('<FocusOut>', lambda event: self.on_focus_out())
-        self.base_entry.pack(side=tk.LEFT)
+        # self.base_entry = ttk.Entry(self, validate='key')
+        # self.base_entry['validatecommand'] = (self.register(self.is_number_or_empty),
+        #                                       '%P')
+        # # sound 'bell' if bad keypress
+        # self.base_entry['invalidcommand'] = 'bell'
+        # self.base_entry.pack(side=tk.LEFT)
         self.base_entry.focus_set()
 
-        ttk.Label(self, text="exponent").pack(side=tk.LEFT)
-        self.exponent_entry = ttk.Entry(self, validate='key')
-        self.exponent_entry['validatecommand'] = (self.register(
-            self.is_number_or_empty), '%P')
-        self.exponent_entry['invalidcommand'] = 'bell'
-        # self.exponent_entry.bind('<Return>',
-        #                          lambda event: self.on_return(event))
-        # self.exponent_entry.bind('<Tab>',
-        #                          lambda event: self.on_tab(event))
-        # self.exponent_entry.bind('<FocusOut>',
-        #                          lambda event: self.on_focus_out())
-        self.exponent_entry.pack(side=tk.LEFT)
+        self.exponent_entry = self.add_entry('exponent')
+        # ttk.Label(self, text="exponent").pack(side=tk.LEFT)
+        # self.exponent_entry = ttk.Entry(self, validate='key')
+        # self.exponent_entry['validatecommand'] = (self.register(
+        #     self.is_number_or_empty), '%P')
+        # self.exponent_entry['invalidcommand'] = 'bell'
+        # self.exponent_entry.pack(side=tk.LEFT)
 
         self.bind_class('TEntry', '<FocusIn>',
                         lambda event: self.on_focus_in(event))
@@ -81,6 +75,18 @@ class View(tk.Frame):
         self.f = mpl.figure.Figure(figsize=(5, 4), dpi=100)
         self.canvas = MPLgraph(self.f, parent)
         self.canvas._tkcanvas.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.BOTH)
+
+    def add_entry(self, text):
+
+        ttk.Label(self, text=text).pack(side=tk.LEFT)
+        # check on each keypress if new result will be a number
+        entry = ttk.Entry(self, validate='key')
+        entry['validatecommand'] = (self.register(self.is_number_or_empty),
+                                    '%P')
+        # sound 'bell' if bad keypress
+        entry['invalidcommand'] = 'bell'
+        entry.pack(side=tk.LEFT)
+        return entry
 
     def set_values(self, base, exponent):
         """Used by the controller to initialize the view's entry values and 
