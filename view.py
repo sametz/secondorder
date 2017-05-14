@@ -1,12 +1,10 @@
 """
-view.View is A tkinter GUI with two entry boxes that accept numbers (labeled 
-"base" and "exponent") and a matplotlib canvas. The interface to the 
-controller is provided by the methods .set_values, .clear, and .plot, 
-which allow View's entry values and matplotlib plot to be updated.
+Provides a View tkinter GUI suitable for plotting functions that use two 
+numerical user inputs.
 
-TODO: The view currently allows the controller to be called when widgets are 
-left empty, which results in a ValueError when the model is called. A 
-workaround such as filling empty entry widgets with 0. is required.
+Contains:
+* MPLgraph    A matplotlib backend tkinter widget used by View
+* View    A tkinter GUI with two numerical entry boxes and a matplotlib canvas. 
 """
 
 import matplotlib as mpl
@@ -20,10 +18,13 @@ from tkinter import ttk
 
 
 class MPLgraph(FigureCanvasTkAgg):
-    """The canvas-like matplotlib object used by view.View."""
+    """The canvas-like matplotlib object used by View.
+
+    """
     def __init__(self, figure, parent=None, **options):
-        """Requires argument:
-        figure: a matplotlib.figure.Figure object
+        """
+        argument:
+            figure: a matplotlib.figure.Figure object
         """
         FigureCanvasTkAgg.__init__(self, figure, parent, **options)
         self.figure = figure
@@ -45,34 +46,42 @@ class MPLgraph(FigureCanvasTkAgg):
 
 
 class View(tk.Frame):
-    """A tkinter GUI with two entry boxes that accept numbers (labeled 
-    "base" and "exponent") and a matplotlib canvas. The interface to the 
-    controller is provided by the methods .set_values, .clear, and .plot, 
-    which allow View's entry values and matplotlib plot to be updated.
+    """A tkinter GUI with two numerical entry boxes (labeled "base" and 
+    "exponent"), and a matplotlib canvas. 
+    
+    View assumes the controller has an update_view method, that accepts 
+    variables in the format:
+    
+        values = {'base': b, 'exponent': e}
+
+    where b and e are floats, and returns an (x, y) tuple of numpy arrays.
+    
+    View provides the following methods for external use by the controller: 
+    
+    * set_values    used to initialize the view
+    * clear    clears the MPLgraph plot
+    * plot    plots data provided as x, y tuple of numpy arrays
     
     TODO: The view currently allows the controller to be called when widgets are 
     left empty, which results in a ValueError when the model is called. A 
     workaround such as filling empty entry widgets with 0. is required.
     """
+
     def __init__(self, parent, controller, **options):
-        """Create the necessary widgets, and dict self.values for 
+        """Create the necessary widgets, and a dict self.values for 
         storing the state of the entry widgets in the format:
             {'base': b, 'exponent': e}
         where b and e are floats.
         
         Requires arguments:
-        parent: parent widget
-        controller: a controller object that provides a .update_view method, 
-        which accepts self.values as an argument.
+            parent: parent widget
+            controller: the object that provides the update_view method
         """
         tk.Frame.__init__(self, parent, **options)
         self.pack()
 
         self.parent = parent
         self.controller = controller
-
-        # GUI entry values are stored in a {'name': float} dictionary.
-        # The controller and the model use the same dict format.
         self.values = {}
 
         self.create_entries()
@@ -80,7 +89,8 @@ class View(tk.Frame):
         self.create_canvas()
 
     def create_entries(self):
-
+        """Add entry widgets and associated labels to View, and assign 
+        StringVar objects to the entry widgets."""
         self.base_entry = self.add_entry('base')
         self.base = tk.StringVar()
         self.base_entry.config(textvariable=self.base)
@@ -94,6 +104,12 @@ class View(tk.Frame):
         """Create a label with text=text, and an entry with numerical entry 
         validation; pack them; and return the entry object for future 
         reference.
+        
+        Argument:
+            text:    string that is both the label text and the key for the 
+                     self.values dict.
+        Returns:
+            entry:    The created ttk.Entry object
         """
         ttk.Label(self, text=text).pack(side=tk.LEFT)
 
@@ -108,12 +124,23 @@ class View(tk.Frame):
     def is_number_or_empty(self, entry):
         """Test (e.g. on keypress) to see if entry status is acceptable (either 
         empty, or able to be converted to a float.)
+        
+        Argument:
+            entry: string
+        Returns:
+            boolean
         """
         return self.is_number(entry) or self.is_empty(entry)
 
     @staticmethod
     def is_number(entry):
-        """Test to see if entry value is a number."""
+        """Test to see if entry value is a number.
+        
+         Argument:
+            entry: string
+        Returns:
+            boolean
+        """
         try:
             float(entry)
             return True
@@ -127,6 +154,7 @@ class View(tk.Frame):
         return False
 
     def create_bindings(self):
+        """Bind events across all entry widgets"""
         self.bind_class('TEntry', '<FocusIn>',
                         lambda event: self.on_focus_in(event))
         self.bind_class('TEntry', '<Return>',
@@ -137,20 +165,19 @@ class View(tk.Frame):
 
     @staticmethod
     def on_focus_in(event):
-        """Select the entire contents of entry widget with focus, for easy 
+        """Select the entire contents of entry widget upon focus, for easy 
         editing.
         """
         event.widget.selection_range(0, tk.END)
 
     def on_value_entry(self, event):
-        """When a valid change to the entry is committed, update the 
-        dictionary of entry values, request a plot refresh, and set focus on 
-        next entry widget."""
+        """When a valid change to the entry is committed, request a view 
+        refresh, and set focus on next entry widget."""
         self.refresh(event)
         self.set_next_focus(event.widget.tk_focusNext())
 
     def refresh(self):
-        """Overwrite dictionary and request plot refresh, but only if an 
+        """Overwrite self.values and request a plot refresh, but only if an 
         entry's value is changed.
         """
         if self.entry_is_changed():
@@ -160,13 +187,18 @@ class View(tk.Frame):
     def entry_is_changed(self):
         """Compare current widget entries to the dictionary of previously 
         stored values.
+        
+        Returns: Boolean
         """
         if self.current_values() != self.values:
             return True
         return False
 
     def current_values(self):
-        """Get current widget values and store them in a dictionary."""
+        """Get current widget values and store them in a dictionary.
+        
+        Returns: a dict in self.values format
+        """
         return {'base': float(self.base.get()),
                 'exponent': float(self.exponent.get())}
 
@@ -179,6 +211,9 @@ class View(tk.Frame):
         """Starting with NextWidget, traverse the order of widgets until the 
         next Entry widget is found, then set focus to it. Used to ignore all 
         the matplotlib widgets.
+        
+        Argument:
+            NextWidget: a tkinter widget
         """
         if type(NextWidget) is not ttk.Entry:
             self.set_next_focus(NextWidget.tk_focusNext())
@@ -186,11 +221,13 @@ class View(tk.Frame):
             NextWidget.focus()
 
     def on_tab(self, event):
-        """Required to override the Tab key's default behavior."""
+        """Wrapper of on_value_entry; required to override the Tab key's 
+        default behavior."""
         self.on_value_entry(event)
         return 'break'
 
     def create_canvas(self):
+        """Adds a MPLgraph widget to the bottom of View's parent."""
         self.figure = mpl.figure.Figure(figsize=(5, 4), dpi=100)
         self.canvas = MPLgraph(self.figure, self.parent)
         self.canvas._tkcanvas.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.BOTH)
@@ -199,7 +236,10 @@ class View(tk.Frame):
     def set_values(self, values):
         """Used by the controller to initialize the view's entry values and 
         data.
-        values: {'name': float} for default base and exponent values."""
+        
+        Argument:
+            values: a dict in self.values format
+        """
         self.base.set(values['base'])
         self.exponent.set(values['exponent'])
         self.values = values
@@ -210,6 +250,7 @@ class View(tk.Frame):
 
     def plot(self, x, y):
         """Plot the model's results to the matplotlib canvas.
+        
         Arguments:
             x, y: numpy arrays of x and y coordinates
         """
