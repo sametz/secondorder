@@ -149,14 +149,13 @@ class View(tk.Frame):
         self.refresh(event)
         self.set_next_focus(event.widget.tk_focusNext())
 
-    def refresh(self, event):
+    def refresh(self):
         """Overwrite dictionary and request plot refresh, but only if an 
         entry's value is changed.
         """
         if self.entry_is_changed():
             self.update_values()
             self.controller.update_view(self.values)
-            # print('values are now: ', self.base.get(), self.exponent.get())
 
     def entry_is_changed(self):
         """Compare current widget entries to the dictionary of previously 
@@ -196,7 +195,7 @@ class View(tk.Frame):
         self.canvas = MPLgraph(self.figure, self.parent)
         self.canvas._tkcanvas.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.BOTH)
 
-    ### The three methods below provide the interface to the controller
+    # The three methods below provide the interface to the controller
     def set_values(self, values):
         """Used by the controller to initialize the view's entry values and 
         data.
