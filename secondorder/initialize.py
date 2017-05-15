@@ -1,6 +1,8 @@
 """
-This module uses the default WINDNMR spinsystem data for 4-spin through
-8-spin and creates a list of (frequency, J couplings) tuples.
+This module uses the default WINDNMR spinsystem data for 3-spin through
+8-spin second-order calculations, and creates a list of (frequency, 
+J couplings) tuples. The WINDNMR defaults were chosen because they allow 
+secondorder's output to be visually checked against WINDNMR's output.
 
 The frequencies v are in numpy arrays.
 The J couplings are in sparse matrices. J[i,j] corresponds to the coupling
@@ -140,7 +142,7 @@ def spin8():
     return v, J
 
 
-def reich_list():
+def windnmr_defaults():
     """
     Creates a package of spin systems that are defaults in WINDNMR.
     Currently this returns a list of all the 4-spin to 8-spin systems in the
@@ -151,7 +153,7 @@ def reich_list():
     return spinsystem
 
 
-def get_reich_default(n):
+def getWINDNMRdefault(n):
     """
     Fetches the default (frequencies, J) tuple for the n-spin second-order
     simulation.
@@ -173,12 +175,11 @@ def get_reich_default(n):
 
 
 if __name__ == '__main__':
-    from nmrmath import nspinspec
-    from nmrplot import nmrplot as nmrplt
+    from model.nmrmath import nspinspec
+    from model.nmrplot import nmrplot as nmrplt
 
-    # spinsystem_list = reich_list()
-    # test_freqs, test_couplings = reich_list()[6]
-    test_freqs, test_couplings = get_reich_default(8)
-    test_couplings = test_couplings.todense()
-    test_spectrum = nspinspec(test_freqs, test_couplings)
+    test_freqs, test_couplings = getWINDNMRdefault(8)
+    print(test_freqs)
+    print(test_couplings)
+    test_spectrum = nspinspec(test_freqs[0], test_couplings)
     nmrplt(test_spectrum, y=25)
