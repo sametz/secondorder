@@ -1,5 +1,5 @@
-secondorder (pre-alpha)
-***********************
+secondorder v0.1.0 (pre-alpha)
+******************************
 
 **secondorder** will graphically simulate the NMR spectra for any number of coupled
 spin-1/2 nuclei. The simulation requires the chemical shifts for all
