@@ -10,8 +10,10 @@ Contains:
 """
 
 import tkinter as tk
+
 from view import View
-import model
+
+from MVCdemo import model
 
 
 class Controller:
