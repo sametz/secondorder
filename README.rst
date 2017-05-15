@@ -1,5 +1,5 @@
-secondorder (pre-alpha)
-***********************
+secondorder v0.1.0 (pre-alpha)
+******************************
 
 **secondorder** will graphically simulate the NMR spectra for any number of coupled
 spin-1/2 nuclei. The simulation requires the chemical shifts for all
@@ -20,3 +20,30 @@ learning the required quantum mechanics "from scratch". I hope to improve my
 understanding of the quantum mechanical foundation of NMR to the point where
 I could explain it to another organic chemist.
 
+Installation and Use
+====================
+
+The project is pre-alpha and subject to change. The master branch should
+maintain a functional program. If you're curious, and have a Python 3
+installation, you can download the project folders, install the requirements in requirements.txt if necessary, and run main.py from the command line.
+
+TODO
+====
+
+See CHANGELOG.rst for the map towards a version 1.0. In addition, there is
+much code refactoring (e.g. to a Model-View-Controller architecture) and
+cleanup required.
+
+Feedback
+========
+
+I welcome feedback on this project. Feel free to leave an issue on Github, or
+contact me by email (mylastname at udel dot edu).
+
+Acknowledgements
+================
+
+This project is inspired by Hans Reich's WINDNMR application. **secondorder**
+initializes its simulations with the same variables as WINDNMR's defaults,
+to verify that the simulation is performing correctly (since formal unit
+testing is not implemented yet, hence the pre-alpha status).
