@@ -11,15 +11,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
 # implement the default mpl key bindings
 from matplotlib.figure import Figure
-from secondorder.model.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
-from secondorder.nspin import getWINDNMRdefault
+from secondorder.model.nmrplot import tkplot
+from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
-from secondorder.GUI.guimixin import GuiMixin  # mix-in class that provides dev
-# tools
-from secondorder.model.nmrmath import AB, AB2, ABX, ABX3, AAXX, first_order, \
-    AABB
-from secondorder.model.nmrmath import nspinspec
-from collections import deque
+from secondorder.model.nmrmath import AB, nspinspec
 
 up_arrow = u"\u21e7"
 down_arrow = u"\u21e9"
@@ -124,7 +119,7 @@ class nSpinBar(Frame):
         n: number of spins
     Dependencies:
         nmrmath.nspinspec
-        nspin.getWINDNMRdefault for WINDNMR default values
+        initialize.getWINDNMRdefault for WINDNMR default values
         nmrplot.tkplot for displaying spectrum
     """
 
@@ -539,7 +534,7 @@ class AB_Bar(ToolBar):
         _Jab = self.vars['Jab']
         _Vab = self.vars['Vab']
         _Vcentr = self.vars['Vcentr']
-        spectrum = AB(_Jab, _Vab, _Vcentr, Wa=0.5, RightHz=0, WdthHz=300)
+        spectrum = AB(_Jab, _Vab, _Vcentr)
         x, y = tkplot(spectrum)
         canvas.clear()
         canvas.plot(x, y)
@@ -573,7 +568,6 @@ root.title('secondorder')  # working title only!
 # First, pack a sidebar frame to contain widgets
 sideFrame = Frame(root, relief=RIDGE, borderwidth=3)
 sideFrame.pack(side=LEFT, expand=NO, fill=Y)
-Label(sideFrame, text='placeholder').pack(side=TOP)
 
 # Next, pack the top frame where function variables will be entered
 TopFrame = Frame(root, relief=RIDGE, borderwidth=1)

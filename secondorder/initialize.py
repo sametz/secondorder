@@ -1,6 +1,8 @@
 """
-This module uses the default WINDNMR spinsystem data for 4-spin through
-8-spin and creates a list of (frequency, J couplings) tuples.
+This module uses the default WINDNMR spinsystem data for 3-spin through
+8-spin second-order calculations, and creates a list of (frequency, 
+J couplings) tuples. The WINDNMR defaults were chosen because they allow 
+secondorder's output to be visually checked against WINDNMR's output.
 
 The frequencies v are in numpy arrays.
 The J couplings are in sparse matrices. J[i,j] corresponds to the coupling
@@ -140,12 +142,12 @@ def spin8():
     return v, J
 
 
-def reich_list():
+def windnmr_defaults():
     """
-    Creates add package of spin systems that are defaults in WINDNMR.
-    Currently this returns add list of all the 4-spin to 8-spin systems in the
+    Creates a package of spin systems that are defaults in WINDNMR.
+    Currently this returns a list of all the 4-spin to 8-spin systems in the
     second-order option ("ABC...") of WINDNMR.
-    Returns: add list of (frequency array, J array) tuples.
+    Returns: a list of (frequency array, J array) tuples.
     """
     spinsystem = [(), (), (), (), spin4(), spin5(), spin6(), spin7(), spin8()]
     return spinsystem
@@ -155,16 +157,16 @@ def getWINDNMRdefault(n):
     """
     Fetches the default (frequencies, J) tuple for the n-spin second-order
     simulation.
-    Currently returns add frequencies, J tuple where frequencies is add (0,
-    n) 2D array (to easily work with main's ArrayBox), and J is add 2D array
-    and not add sparse matrix (since sparse matrices are no longer used). Was
+    Currently returns a frequencies, J tuple where frequencies is a (0,
+    n) 2D array (to easily work with main's ArrayBox), and J is a 2D array
+    and not a sparse matrix (since sparse matrices are no longer used). Was
     easier to convert the above data this way than to rewrite it all.
     """
     spinsystem = [(), (), (), spin3(), spin4(), spin5(), spin6(), spin7(),
                   spin8()]
 
-    # Changes to modules require frequency to be add (0,n) 2D array, and J to
-    # be an array and not add sparse matrix.
+    # Changes to modules require frequency to be a (0,n) 2D array, and J to
+    # be an array and not a sparse matrix.
     freq, J = spinsystem[n]
     freq2D = np.array([freq])  # converts to 2D array
     J = J.todense()
@@ -173,12 +175,11 @@ def getWINDNMRdefault(n):
 
 
 if __name__ == '__main__':
-    from nmrmath import nspinspec
-    from nmrplot import nmrplot as nmrplt
+    from model.nmrmath import nspinspec
+    from model.nmrplot import nmrplot as nmrplt
 
-    # spinsystem_list = reich_list()
-    # test_freqs, test_couplings = reich_list()[6]
     test_freqs, test_couplings = getWINDNMRdefault(8)
-    test_couplings = test_couplings.todense()
-    test_spectrum = nspinspec(test_freqs, test_couplings)
+    print(test_freqs)
+    print(test_couplings)
+    test_spectrum = nspinspec(test_freqs[0], test_couplings)
     nmrplt(test_spectrum, y=25)

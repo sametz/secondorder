@@ -10,7 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 from secondorder.model.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
-from secondorder.nspin import getWINDNMRdefault
+from secondorder.initialize import getWINDNMRdefault
 #from tkinter import *
 from secondorder.GUI.guimixin import GuiMixin  # mix-in class that provides dev
 # tools
