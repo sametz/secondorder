@@ -3,15 +3,15 @@ The main GUI, to be run as the main application.
 """
 import matplotlib
 import numpy as np
-import tkinter as tk
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
+# implement the default mpl key bindings
 from matplotlib.figure import Figure
 from secondorder.model.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
 from secondorder.nspin import get_reich_default
-#from tkinter import *
+from tkinter import *
 from secondorder.GUI.guimixin import GuiMixin  # mix-in class that provides dev
 # tools
 from secondorder.model.nmrmath import AB, AB2, ABX, ABX3, AAXX, first_order, \
@@ -25,7 +25,7 @@ left_arrow = u"\u21e6"
 right_arrow = u"\u21e8"
 
 
-class RadioFrame(tk.Frame):
+class RadioFrame(Frame):
     """
     Creates and packs radio button frames into parent.
     arguments:
@@ -34,13 +34,13 @@ class RadioFrame(tk.Frame):
     """
 
     def __init__(self, parent=None, buttons=(), title='', **options):
-        tk.Frame.__init__(self, parent, **options)
-        tk.Label(self, text=title).pack(side=tk.TOP)
-        self.var =tk.StringVar()
+        Frame.__init__(self, parent, **options)
+        Label(self, text=title).pack(side=TOP)
+        self.var = StringVar()
         for button in buttons:
-            tk.Radiobutton(self, text=button[0], command=button[1],
+            Radiobutton(self, text=button[0], command=button[1],
                         variable=self.var,
-                        value=button[0]).pack(anchor=tk.NW)
+                        value=button[0]).pack(anchor=NW)
         self.var.set(buttons[0][0])  # turns the top button on
 
 
@@ -63,20 +63,18 @@ class CalcTypeFrame(GuiMixin, RadioFrame):
         self.infobox(self.var.get(), self.var.get())
 
 
-class ModelFrames(GuiMixin, tk.Frame):
+class ModelFrames(GuiMixin, Frame):
     """
     Creates add frame that stores and manages the individual button menus
     for the different calc types, which will be selected by
     CalcTypeFrame.
     """
 
-    def __init__(self, parent=None, ToolFrame=None, **options):
-        tk.Frame.__init__(self, parent, **options)
-        self.pack(side=tk.TOP, anchor=tk.N, expand=tk.YES, fill=tk.X)
+    def __init__(self, parent=None, **options):
+        Frame.__init__(self, parent, **options)
+        self.pack(side=TOP, anchor=N, expand=YES, fill=X)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
-
-        self.ToolFrame = ToolFrame
 
         self.add_multiplet_buttons()  # Creates 'Multiplet' radio button menu
         self.add_abc_buttons()  # Creates 'ABC...' radio button menu
@@ -99,7 +97,7 @@ class ModelFrames(GuiMixin, tk.Frame):
         # Initialize with default frame and toolbar
         self.currentframe = 'multiplet'
         self.currentbar = self.ab  # On program start, simulation set to ABq
-        self.currentbar.grid(sticky=tk.W)
+        self.currentbar.grid(sticky=W)
         self.currentbar.call_model()
 
     # menu placeholders: callbacks will be added as functionality added
@@ -117,14 +115,14 @@ class ModelFrames(GuiMixin, tk.Frame):
         self.MultipletButtons = RadioFrame(self,
                                            buttons=multiplet_buttons,
                                            title='Multiplet')
-        self.MultipletButtons.grid(row=0, column=0, sticky=tk.N)
-        self.ab = AB_Bar(self.ToolFrame)
-        self.ab2 = AB2_Bar(self.ToolFrame)
-        self.abx = ABX_Bar(self.ToolFrame)
-        self.abx3 = ABX3_Bar(self.ToolFrame)
-        self.aaxx = AAXX_Bar(self.ToolFrame)
-        self.firstorder = FirstOrder_Bar(self.ToolFrame)
-        self.aabb = AABB_Bar(self.ToolFrame)
+        self.MultipletButtons.grid(row=0, column=0, sticky=N)
+        self.ab = AB_Bar(TopFrame)
+        self.ab2 = AB2_Bar(TopFrame)
+        self.abx = ABX_Bar(TopFrame)
+        self.abx3 = ABX3_Bar(TopFrame)
+        self.aaxx = AAXX_Bar(TopFrame)
+        self.firstorder = FirstOrder_Bar(TopFrame)
+        self.aabb = AABB_Bar(TopFrame)
 
     def add_abc_buttons(self):
         """ 'ABC...' menu: Quantum Mechanics approach"""
@@ -139,12 +137,12 @@ class ModelFrames(GuiMixin, tk.Frame):
         self.ABC_Buttons = RadioFrame(self,
                                       buttons=abc_buttons,
                                       title='2-7 Spins')
-        self.spin3 = nSpinBar(self.ToolFrame, n=3)
-        self.spin4 = nSpinBar(self.ToolFrame, n=4)
-        self.spin5 = nSpinBar(self.ToolFrame, n=5)
-        self.spin6 = nSpinBar(self.ToolFrame, n=6)
-        self.spin7 = nSpinBar(self.ToolFrame, n=7)
-        self.spin8 = nSpinBar(self.ToolFrame, n=8)
+        self.spin3 = nSpinBar(TopFrame, n=3)
+        self.spin4 = nSpinBar(TopFrame, n=4)
+        self.spin5 = nSpinBar(TopFrame, n=5)
+        self.spin6 = nSpinBar(TopFrame, n=6)
+        self.spin7 = nSpinBar(TopFrame, n=7)
+        self.spin8 = nSpinBar(TopFrame, n=8)
 
     def add_dnmr_buttons(self):
         """'DNMR': models for DNMR line shape analysis"""
@@ -155,12 +153,12 @@ class ModelFrames(GuiMixin, tk.Frame):
         self.DNMR_Buttons = RadioFrame(self,
                                        buttons=dnmr_buttons,
                                        title='DNMR')
-        self.TwoSpinBar = DNMR_TwoSingletBar(self.ToolFrame)
-        self.DNMR_AB_Bar = DNMR_AB_Bar(self.ToolFrame)
+        self.TwoSpinBar = DNMR_TwoSingletBar(TopFrame)
+        self.DNMR_AB_Bar = DNMR_AB_Bar(TopFrame)
 
     def add_custom_buttons(self):
         # Custom: not implemented yet. Placeholder follows
-        self.Custom = tk.Label(self, text='Custom models not implemented yet')
+        self.Custom = Label(self, text='Custom models not implemented yet')
 
     def select_frame(self, frame):
         if frame != self.currentframe:
@@ -174,7 +172,7 @@ class ModelFrames(GuiMixin, tk.Frame):
     def select_toolbar(self, toolbar):
         self.currentbar.grid_remove()
         self.currentbar = toolbar
-        self.currentbar.grid(sticky=tk.W)
+        self.currentbar.grid(sticky=W)
         # record current bar of currentframe:
         self.active_bar_dict[self.currentframe] = toolbar
         try:
@@ -184,7 +182,7 @@ class ModelFrames(GuiMixin, tk.Frame):
 
 
 # ToolBox no longer needed? Delete?
-class ToolBox(tk.Frame):
+class ToolBox(Frame):
     """
     A frame object that will contain multiple toolbars gridded to (0,0).
     It will maintain add deque of [current, last] toolbars used. When add new model
@@ -195,7 +193,7 @@ class ToolBox(tk.Frame):
     """
 
     def __init__(self, parent=None, **options):
-        tk.Frame.__init__(self, parent, **options)
+        Frame.__init__(self, parent, **options)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.toolbars = deque([], 2)
@@ -217,7 +215,7 @@ class MultipletBox(ToolBox):
         ToolBox.__init__(self, parent, **options)
 
 
-class ToolBar(tk.Frame):
+class ToolBar(Frame):
     """
     A frame object that contains entry widgets, add dictionary of
     their current contents, and add function to call the appropriate model.
@@ -228,20 +226,20 @@ class ToolBar(tk.Frame):
 
     # canvas = FigureCanvasTkAgg(figure, master=root)
     # canvas.show()
-    # canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    # canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
     # toolbar = NavigationToolbar2TkAgg(canvas, root)
     # toolbar.refresh()
-    # canvas._tkcanvas.pack(anchor=tk.SE, expand=tk.YES, fill=tk.BOTH)
+    # canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
 
     def __init__(self, parent=None, **options):
-        tk.Frame.__init__(self, parent, **options)
+        Frame.__init__(self, parent, **options)
         self.vars = {}
 
     def call_model(self):
         print('Sending to dummy_model: ', self.vars)
 
 
-class nSpinBar(tk.Frame):
+class nSpinBar(Frame):
     """
     A frame object similar to ToolBar that holds n frequency entry boxes, add 1-D
     array for frequencies, add 2-D array for coupling constants, and add button
@@ -255,49 +253,49 @@ class nSpinBar(tk.Frame):
     """
 
     def __init__(self, parent=None, n=4, **options):
-        tk.Frame.__init__(self, parent, **options)
+        Frame.__init__(self, parent, **options)
         self.v_obj = np.zeros(n, dtype=object)
         self.v, self.j = get_reich_default(n)
         for freq in range(n):
             vbox = ArrayBox(self, a=self.v, coord=(0, freq),
                             name='V' + str(freq + 1))
             self.v_obj[freq] = vbox
-            vbox.pack(side=tk.LEFT)
-        vj_button = tk.Button(self, text="Enter Js",
+            vbox.pack(side=LEFT)
+        vj_button = Button(self, text="Enter Js",
                            command=lambda: self.vj_popup(n))
-        vj_button.pack(side=tk.LEFT, expand=tk.N, fill=tk.NONE)
+        vj_button.pack(side=LEFT, expand=N, fill=NONE)
 
     def vj_popup(self, n):
-        tl = tk.Toplevel()
-        tk.Label(tl, text='Second-Order Simulation').pack(side=tk.TOP)
+        tl = Toplevel()
+        Label(tl, text='Second-Order Simulation').pack(side=TOP)
         datagrid = ArrayFrame(tl, self.call_model, self.v_obj)
 
         # For gridlines, background set to the line color (e.g. 'black')
         datagrid.config(background='black')
 
-        tk.Label(datagrid, bg='gray90').grid(row=0, column=0, sticky=tk.NSEW,
+        Label(datagrid, bg='gray90').grid(row=0, column=0, sticky=NSEW,
                                           padx=1, pady=1)
         for col in range(1, n + 1):
-            tk.Label(datagrid, text='V%d' % col, width=8, height=3,
+            Label(datagrid, text='V%d' % col, width=8, height=3,
                   bg='gray90').grid(
-                row=0, column=col, sticky=tk.NSEW, padx=1, pady=1)
+                row=0, column=col, sticky=NSEW, padx=1, pady=1)
 
         for row in range(1, n + 1):
             vtext = "V" + str(row)
             v = ArrayBox(datagrid, a=self.v,
                          coord=(0, row - 1),  # V1 stored in v[0, 0], etc.
                          name=vtext, color='gray90')
-            v.grid(row=row, column=0, sticky=tk.NSEW, padx=1, pady=1)
+            v.grid(row=row, column=0, sticky=NSEW, padx=1, pady=1)
             for col in range(1, n + 1):
                 if col < row:
                     j = ArrayBox(datagrid, a=self.j,
                                  # J12 stored in j[0, 1] (and j[1, 0]) etc
                                  coord=(col - 1, row - 1),
                                  name="J%d%d" % (col, row))
-                    j.grid(row=row, column=col, sticky=tk.NSEW, padx=1, pady=1)
+                    j.grid(row=row, column=col, sticky=NSEW, padx=1, pady=1)
                 else:
-                    tk.Label(datagrid, bg='grey').grid(
-                        row=row, column=col, sticky=tk.NSEW, padx=1, pady=1)
+                    Label(datagrid, bg='grey').grid(
+                        row=row, column=col, sticky=NSEW, padx=1, pady=1)
 
         datagrid.pack()
 
@@ -327,7 +325,7 @@ class DNMR_TwoSingletBar(ToolBar):
         Wb = VarButtonBox(self, name='Wb', default=0.5)
         pa = VarButtonBox(self, name='%add', default=50)
         for widget in [Va, Vb, ka, Wa, Wb, pa]:
-            widget.pack(side=tk.LEFT)
+            widget.pack(side=LEFT)
 
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
@@ -365,7 +363,7 @@ class DNMR_AB_Bar(ToolBar):
                           default=0.5)  # W is add tkinter string,
         # so used W_
         for widget in [Va, Vb, J, kAB, W_]:
-            widget.pack(side=tk.LEFT)
+            widget.pack(side=LEFT)
 
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
@@ -383,14 +381,14 @@ class DNMR_AB_Bar(ToolBar):
         canvas.plot(x, y)
 
 
-class EmptyToolBar(tk.Frame):
+class EmptyToolBar(Frame):
     def __init__(self, parent=None, name='noname', **options):
-        tk.Frame.__init__(self, parent, **options)
-        tk.Label(self, text=name + ' model not implemented yet').pack()
+        Frame.__init__(self, parent, **options)
+        Label(self, text=name + ' model not implemented yet').pack()
         self.pack()
 
 
-class VarBox(tk.Frame):
+class VarBox(Frame):
     """
     Eventually will emulate what the Reich entry box does, more or less.
     Idea is to fill the VarFrame with these modules.
@@ -406,16 +404,15 @@ class VarBox(tk.Frame):
     """
 
     def __init__(self, parent=None, name='', default=0.00, **options):
-        tk.Frame.__init__(self, parent, relief=tk.RIDGE, borderwidth=1,
-                          **options)
-        tk.Label(self, text=name).pack(side=tk.TOP)
+        Frame.__init__(self, parent, relief=RIDGE, borderwidth=1, **options)
+        Label(self, text=name).pack(side=TOP)
         self.widgetName = name  # will be key in dictionary
 
         # Entries will be limited to numerical
-        ent = tk.Entry(self, width=7,
+        ent = Entry(self, width=7,
                     validate='key')  # check for number on keypress
-        ent.pack(side=tk.TOP, fill=tk.X)
-        self.value =tk.StringVar()
+        ent.pack(side=TOP, fill=X)
+        self.value = StringVar()
         ent.config(textvariable=self.value)
         self.value.set(str(default))
 
@@ -479,7 +476,7 @@ class VarBox(tk.Frame):
     """
 
 
-class VarButtonBox(tk.Frame):
+class VarButtonBox(Frame):
     """
     A deluxe VarBox that is closer to WINDNMR-style entry boxes.
     ent = entry that holds the value used for calculations
@@ -493,17 +490,16 @@ class VarButtonBox(tk.Frame):
 
     # To do: use inheritance to avoid repeating code for different widgets
     def __init__(self, parent=None, name='', default=0.00, **options):
-        tk.Frame.__init__(self, parent, relief=tk.RIDGE, borderwidth=1,
-                          **options)
-        tk.Label(self, text=name).pack(side=tk.TOP)
+        Frame.__init__(self, parent, relief=RIDGE, borderwidth=1, **options)
+        Label(self, text=name).pack(side=TOP)
 
         self.widgetName = name  # will be key in dictionary
 
         # Entries will be limited to numerical
-        ent = tk.Entry(self, width=7,
+        ent = Entry(self, width=7,
                     validate='key')  # check for number on keypress
-        ent.pack(side=tk.TOP, fill=tk.X)
-        self.value =tk.StringVar()
+        ent.pack(side=TOP, fill=X)
+        self.value = StringVar()
         ent.config(textvariable=self.value)
         self.value.set(str(default))
 
@@ -520,36 +516,36 @@ class VarButtonBox(tk.Frame):
         ent['invalidcommand'] = 'bell'
 
         # Create add grid for buttons and increment
-        minus_plus_up = tk.Frame(self)
+        minus_plus_up = Frame(self)
         minus_plus_up.rowconfigure(0, minsize=30)  # make 2 rows ~same height
         minus_plus_up.columnconfigure(2, weight=1)  # lets arrow buttons fill
-        minus_plus_up.pack(side=tk.TOP, expand=tk.Y, fill=tk.X)
+        minus_plus_up.pack(side=TOP, expand=Y, fill=X)
 
-        minus = tk.Button(minus_plus_up, text='-',
+        minus = Button(minus_plus_up, text='-',
                        command=lambda: self.decrease())
-        plus = tk.Button(minus_plus_up, text='+',
+        plus = Button(minus_plus_up, text='+',
                       command=lambda: self.increase())
-        up = tk.Button(minus_plus_up, text=up_arrow, command=lambda: None)
+        up = Button(minus_plus_up, text=up_arrow, command=lambda: None)
         up.bind('<Button-1>', lambda event: self.zoom_up())
         up.bind('<ButtonRelease-1>', lambda event: self.stop_action())
 
         self.mouse1 = False  # Flag used to check if left button held down
 
-        minus.grid(row=0, column=0, sticky=tk.NSEW)
-        plus.grid(row=0, column=1, sticky=tk.NSEW)
-        up.grid(row=0, column=2, sticky=tk.NSEW)
+        minus.grid(row=0, column=0, sticky=NSEW)
+        plus.grid(row=0, column=1, sticky=NSEW)
+        up.grid(row=0, column=2, sticky=NSEW)
 
         # Increment is also limited to numerical entry
-        increment = tk.Entry(minus_plus_up, width=4, validate='key')
-        increment.grid(row=1, column=0, columnspan=2, sticky=tk.NSEW)
-        self.inc =tk.StringVar()
+        increment = Entry(minus_plus_up, width=4, validate='key')
+        increment.grid(row=1, column=0, columnspan=2, sticky=NSEW)
+        self.inc = StringVar()
         increment.config(textvariable=self.inc)
         self.inc.set(str(1))  # 1 replaced by argument later?
         increment['validatecommand'] = (self.register(self.is_number), '%P')
         increment['invalidcommand'] = 'bell'
 
-        down = tk.Button(minus_plus_up, text=down_arrow, command=lambda: None)
-        down.grid(row=1, column=2, sticky=tk.NSEW)
+        down = Button(minus_plus_up, text=down_arrow, command=lambda: None)
+        down.grid(row=1, column=2, sticky=NSEW)
         down.bind('<Button-1>', lambda event: self.zoom_down())
         down.bind('<ButtonRelease-1>', lambda event: self.stop_action())
 
@@ -647,7 +643,7 @@ class VarButtonBox(tk.Frame):
     """
 
 
-class ArrayFrame(tk.Frame):
+class ArrayFrame(Frame):
     """
     A frame used for holding add grid of ArrayBox entries, passing their
     call_model requests up to the provided func, and passing changes to V
@@ -658,12 +654,12 @@ class ArrayFrame(tk.Frame):
     """
 
     def __init__(self, parent, func, v_obj, **options):
-        tk.Frame.__init__(self, parent, **options)
+        Frame.__init__(self, parent, **options)
         self.call_model = func
         self.v_obj = v_obj
 
 
-class ArrayBox(tk.Frame):
+class ArrayBox(Frame):
     """
     A version of VarBox that will save its entry to an array. It will be
     initialized with the provided array, so e.g. if n-spin models are being
@@ -678,16 +674,16 @@ class ArrayBox(tk.Frame):
     # noinspection PyDefaultArgument
     def __init__(self, parent=None, a=[], coord=(0, 0), name='', color='white',
                  **options):
-        tk.Frame.__init__(self, parent, relief=tk.RIDGE, borderwidth=0,
+        Frame.__init__(self, parent, relief=RIDGE, borderwidth=0,
                        background=color, **options)
-        tk.Label(self, text=name, bg=color, bd=0).pack(side=tk.TOP)
+        Label(self, text=name, bg=color, bd=0).pack(side=TOP)
         self.widgetName = name
 
         # Entries will be limited to numerical
-        ent = tk.Entry(self, width=7,
+        ent = Entry(self, width=7,
                     validate='key')  # check for number on keypress
-        ent.pack(side=tk.TOP, fill=tk.X)
-        self.value =tk.StringVar()
+        ent.pack(side=TOP, fill=X)
+        self.value = StringVar()
         ent.config(textvariable=self.value)
 
         self.a = a
@@ -763,7 +759,7 @@ class ArrayBox(tk.Frame):
     """
 
 
-class IntBox(tk.Frame):
+class IntBox(Frame):
     """
     A modification of VarBox code. Restricts inputs to integers.
     Inputs:
@@ -775,15 +771,14 @@ class IntBox(tk.Frame):
     # that varies in its input restriction (float, int, str etc), and/or
     # look into tkinter built-in entry boxes as component.
     def __init__(self, parent=None, name='', default=0.00, **options):
-        tk.Frame.__init__(self, parent, relief=tk.RIDGE, borderwidth=1,
-                          **options)
-        tk.Label(self, text=name).pack(side=tk.TOP, expand=tk.NO, fill=tk.NONE)
+        Frame.__init__(self, parent, relief=RIDGE, borderwidth=1, **options)
+        Label(self, text=name).pack(side=TOP, expand=NO, fill=NONE)
         self.widgetName = name  # will be key in dictionary
 
         # Entries will be limited to numerical
-        ent = tk.Entry(self, width=7, validate='key')  # check for int on keypress
-        ent.pack(side=tk.TOP, expand=tk.NO, fill=tk.NONE)
-        self.value = tk.StringVar()
+        ent = Entry(self, width=7, validate='key')  # check for int on keypress
+        ent.pack(side=TOP, expand=NO, fill=NONE)
+        self.value = StringVar()
         ent.config(textvariable=self.value)
         self.value.set(str(default))
         ent.bind('<Return>', lambda event: self.on_event(event))
@@ -852,9 +847,9 @@ class AB_Bar(ToolBar):
         Jab = VarBox(self, name='Jab', default=12.00)
         Vab = VarBox(self, name='Vab', default=15.00)
         Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jab.pack(side=tk.LEFT)
-        Vab.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Jab.pack(side=LEFT)
+        Vab.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -881,9 +876,9 @@ class AB2_Bar(ToolBar):
         Jab = VarBox(self, name='Jab', default=12.00)
         Vab = VarBox(self, name='Vab', default=15.00)
         Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jab.pack(side=tk.LEFT)
-        Vab.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Jab.pack(side=LEFT)
+        Vab.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -912,11 +907,11 @@ class ABX_Bar(ToolBar):
         Jbx = VarBox(self, name='Jbx', default=8.00)
         Vab = VarBox(self, name='Vab', default=15.00)
         Vcentr = VarBox(self, name='Vcentr', default=118)
-        Jab.pack(side=tk.LEFT)
-        Jax.pack(side=tk.LEFT)
-        Jbx.pack(side=tk.LEFT)
-        Vab.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Jab.pack(side=LEFT)
+        Jax.pack(side=LEFT)
+        Jbx.pack(side=LEFT)
+        Vab.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -948,11 +943,11 @@ class ABX3_Bar(ToolBar):
         Jbx = VarBox(self, name='Jbx', default=7.00)
         Vab = VarBox(self, name='Vab', default=14.00)
         Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jab.pack(side=tk.LEFT)
-        Jax.pack(side=tk.LEFT)
-        Jbx.pack(side=tk.LEFT)
-        Vab.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Jab.pack(side=LEFT)
+        Jax.pack(side=LEFT)
+        Jbx.pack(side=LEFT)
+        Vab.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -984,11 +979,11 @@ class AAXX_Bar(ToolBar):
         Jax = VarBox(self, name="JAX", default=40.00)
         Jax_prime = VarBox(self, name="JAX'", default=6.00)
         Vcentr = VarBox(self, name="Vcentr", default=150)
-        Jaa.pack(side=tk.LEFT)
-        Jxx.pack(side=tk.LEFT)
-        Jax.pack(side=tk.LEFT)
-        Jax_prime.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Jaa.pack(side=LEFT)
+        Jxx.pack(side=LEFT)
+        Jax.pack(side=LEFT)
+        Jax_prime.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -1021,12 +1016,12 @@ class AABB_Bar(ToolBar):
         Jab = VarBox(self, name="JAB", default=40.00)
         Jab_prime = VarBox(self, name="JAB'", default=6.00)
         Vcentr = VarBox(self, name="Vcentr", default=150)
-        Vab.pack(side=tk.LEFT)
-        Jaa.pack(side=tk.LEFT)
-        Jbb.pack(side=tk.LEFT)
-        Jab.pack(side=tk.LEFT)
-        Jab_prime.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Vab.pack(side=LEFT)
+        Jaa.pack(side=LEFT)
+        Jbb.pack(side=LEFT)
+        Jab.pack(side=LEFT)
+        Jab_prime.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -1063,15 +1058,15 @@ class FirstOrder_Bar(ToolBar):
         Jdx = VarBox(self, name='JDX', default=7.00)
         d = IntBox(self, name='#D', default=0)
         Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jax.pack(side=tk.LEFT)
-        a.pack(side=tk.LEFT)
-        Jbx.pack(side=tk.LEFT)
-        b.pack(side=tk.LEFT)
-        Jcx.pack(side=tk.LEFT)
-        c.pack(side=tk.LEFT)
-        Jdx.pack(side=tk.LEFT)
-        d.pack(side=tk.LEFT)
-        Vcentr.pack(side=tk.LEFT)
+        Jax.pack(side=LEFT)
+        a.pack(side=LEFT)
+        Jbx.pack(side=LEFT)
+        b.pack(side=LEFT)
+        Jcx.pack(side=LEFT)
+        c.pack(side=LEFT)
+        Jdx.pack(side=LEFT)
+        d.pack(side=LEFT)
+        Vcentr.pack(side=LEFT)
         # initialize self.vars with toolbox defaults
         for child in self.winfo_children():
             child.to_dict()
@@ -1103,7 +1098,7 @@ class MPLgraph(FigureCanvasTkAgg):
         self.a = f.add_subplot(111)
         self.a.invert_xaxis()
         self.show()
-        self.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
         self.toolbar = NavigationToolbar2TkAgg(self, master)
         self.toolbar.update()
 
@@ -1115,70 +1110,53 @@ class MPLgraph(FigureCanvasTkAgg):
         self.a.clear()
         self.f.canvas.draw()
 
-class View(tk.Frame):
-    def __init__(self, parent, controller, **options):
-        tk.Frame.__init__(self, parent, **options)
-        #self.pack()
-        self.parent = parent
-        self.controller = controller
-        sideFrame = tk.Frame(parent, relief=tk.RIDGE, borderwidth=3)
-        sideFrame.pack(side=tk.LEFT, expand=tk.NO, fill=tk.Y)
-        tk.Label(sideFrame, text='placeholder').pack()
 
-        TopFrame = tk.Frame(parent, relief=tk.RIDGE, borderwidth=1)
-        TopFrame.pack(side=tk.TOP, expand=tk.NO, fill=tk.X)
-        TopFrame.grid_rowconfigure(0, weight=1)
-        TopFrame.grid_columnconfigure(0, weight=1)
-        tk.Label(TopFrame, text='placeholder').pack()
+# Create the main application window:
+root = Tk()
+root.title('secondorder')  # working title only!
 
-        Models = ModelFrames(sideFrame, relief=tk.SUNKEN, borderwidth=1)
-        Models.pack(side=tk.TOP, expand=tk.YES, fill=tk.X, anchor=tk.N)
-if __name__ == '__main__':
-    # Create the main application window:
-    root = tk.Tk()
-    root.title('secondorder')  # working title only!
+# Create the basic GUI structure: sidebar, topbar, and display area
+# First, pack add sidebar frame to contain widgets
+sideFrame = Frame(root, relief=RIDGE, borderwidth=3)
+sideFrame.pack(side=LEFT, expand=NO, fill=Y)
 
-    # Create the basic GUI structure: sidebar, topbar, and display area
-    # First, pack add sidebar frame to contain widgets
-    sideFrame = tk.Frame(root, relief=tk.RIDGE, borderwidth=3)
-    sideFrame.pack(side=tk.LEFT, expand=tk.NO, fill=tk.Y)
+# Next, pack the top frame where function variables will be entered
+TopFrame = Frame(root, relief=RIDGE, borderwidth=1)
+TopFrame.pack(side=TOP, expand=NO, fill=X)
+TopFrame.grid_rowconfigure(0, weight=1)
+TopFrame.grid_columnconfigure(0, weight=1)
 
-    # Next, pack the top frame where function variables will be entered
-    TopFrame = tk.Frame(root, relief=tk.RIDGE, borderwidth=1)
-    TopFrame.pack(side=tk.TOP, expand=tk.NO, fill=tk.X)
-    TopFrame.grid_rowconfigure(0, weight=1)
-    TopFrame.grid_columnconfigure(0, weight=1)
+# Remaining lower right area will be for add Canvas or matplotlib spectrum frame
+# Because we want the spectrum clipped first, will pack it last
+f = Figure(figsize=(5, 4), dpi=100)
+canvas = MPLgraph(f, root)
 
-    # Remaining lower right area will be for add Canvas or matplotlib spectrum frame
-    # Because we want the spectrum clipped first, will pack it last
-    f = Figure(figsize=(5, 4), dpi=100)
-    canvas = MPLgraph(f, root)
+# Create sidebar widgets:
+#CalcTypeFrame(sideFrame, relief=SUNKEN, borderwidth=1).pack(side=TOP,
+                                                            #expand=NO,
+                                                            #fill=X)
+Models = ModelFrames(sideFrame, relief=SUNKEN, borderwidth=1)
+Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
+Models.select_frame('abc')
+# The clickyFrame for clicking on peaks and calculating frequency differences
+# will not be implemented until much later:
+clickyFrame = Frame(sideFrame, relief=SUNKEN, borderwidth=1)
+clickyFrame.pack(side=TOP, expand=YES, fill=X)
+Label(clickyFrame, text='clickys go here').pack()
 
-    # Create sidebar widgets:
-    CalcTypeFrame(sideFrame, relief=tk.SUNKEN, borderwidth=1).pack(side=tk.TOP,
-                                                                expand=tk.NO,
-                                                                fill=tk.X)
-    Models = ModelFrames(sideFrame, relief=tk.SUNKEN, borderwidth=1)
-    Models.pack(side=tk.TOP, expand=tk.YES, fill=tk.X, anchor=tk.N)
+# Now we can pack the canvas (want it to be clipped first)
+canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
 
-    # The clickyFrame for clicking on peaks and calculating frequency differences
-    # will not be implemented until much later:
-    clickyFrame = tk.Frame(sideFrame, relief=tk.SUNKEN, borderwidth=1)
-    clickyFrame.pack(side=tk.TOP, expand=tk.YES, fill=tk.X)
-    tk.Label(clickyFrame, text='clickys go here').pack()
+Button(root, text="clear", command=lambda: canvas.clear()).pack(side=BOTTOM)
 
-    # Now we can pack the canvas (want it to be clipped first)
-    canvas._tkcanvas.pack(anchor=tk.SE, expand=tk.YES, fill=tk.BOTH)
+# root.mainloop()
 
-    tk.Button(root, text="clear", command=lambda: canvas.clear()).pack(side=tk.BOTTOM)
+# workaround fix for Tk problems and mac mouse/trackpad:
 
-    # root.mainloop()
+while True:
+    try:
+        root.mainloop()
+        break
+    except UnicodeDecodeError:
+        pass
 
-    # workaround fix for Tk problems and mac mouse/trackpad:
-
-    while True:
-        try:
-            root.mainloop()
-            break
-        except UnicodeDecodeError:
-            pass
