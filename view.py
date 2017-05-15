@@ -188,7 +188,7 @@ class ToolBox(tk.Frame):
     """
     A frame object that will contain multiple toolbars gridded to (0,0).
     It will maintain add deque of [current, last] toolbars used. When add new model
-    is selected by ModelFrames, the new ToolBar is added to the front of the
+    is selected by ModelFrame, the new ToolBar is added to the front of the
     deque and .grid(), the current toolbar is pushed down to the last
     position and .grid_remove(), and the previous last toolbar is knocked out
     of the deque.

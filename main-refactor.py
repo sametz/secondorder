@@ -29,7 +29,7 @@ class RadioFrame(Frame):
     """
     Creates and packs radio button frames into parent.
     arguments:
-    -buttons: add tuple of (text, function) tuples
+    -buttons: a tuple of (text, function) tuples
     -title: an optional title to put above the button list
     """
 
@@ -63,9 +63,9 @@ class RadioFrame(Frame):
 #         self.infobox(self.var.get(), self.var.get())
 
 
-class ModelFrames(GuiMixin, Frame):
+class ModelFrame(GuiMixin, Frame):
     """
-    Creates add frame that stores and manages the individual button menus
+    Creates a frame that stores and manages the individual button menus
     for the different calc types, which will be selected by
     CalcTypeFrame.
     """
@@ -76,17 +76,17 @@ class ModelFrames(GuiMixin, Frame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        self.add_multiplet_buttons()  # Creates 'Multiplet' radio button menu
+        #self.add_multiplet_buttons()  # Creates 'Multiplet' radio button menu
         self.add_abc_buttons()  # Creates 'ABC...' radio button menu
         #self.add_dnmr_buttons()  # Creates 'DNMR' radio button menu
         #self.add_custom_buttons()  # Creates 'Custom' radio bar menu
 
         # framedic used by CalcTypeFrame to control individual frames
-        self.framedic = {'multiplet': self.MultipletButtons,
-                         'abc': self.ABC_Buttons#,
-                         #'dnmr': self.DNMR_Buttons,
-                         #'custom': self.Custom
-                        }
+        # self.framedic = {#'multiplet': self.MultipletButtons,
+        #                  'abc': self.ABC_Buttons#,
+        #                  #'dnmr': self.DNMR_Buttons,
+        #                  #'custom': self.Custom
+        #                 }
 
         # active_bar_dict used to keep track of the active model in each
         # individual button menu.
@@ -97,50 +97,52 @@ class ModelFrames(GuiMixin, Frame):
                                }
 
         # Initialize with default frame and toolbar
-        self.currentframe = 'multiplet'
-        #self.currentframe = 'abc'
-        self.select_frame('multiplet')
+        # self.currentframe = 'multiplet'
+        self.currentframe = 'abc'
+        # self.select_frame('multiplet')
+        #self.select_frame('abc')
         self.currentbar = self.ab  # On program start, simulation set to ABq
         self.currentbar.grid(sticky=W)
         self.currentbar.call_model()
 
     # menu placeholders: callbacks will be added as functionality added
 
-    def add_multiplet_buttons(self):
-        """"'Multiplet' menu: 'canned' solutions for common spin systems"""
-        multiplet_buttons = (('AB', lambda: self.select_toolbar(self.ab)),
-                             ('AB2', lambda: self.select_toolbar(self.ab2)),
-                             ('ABX', lambda: self.select_toolbar(self.abx)),
-                             ('ABX3', lambda: self.select_toolbar(self.abx3)),
-                             ("AA'XX'", lambda: self.select_toolbar(self.aaxx)),
-                             ('1stOrd',
-                              lambda: self.select_toolbar(self.firstorder)),
-                             ("AA'BB'", lambda: self.select_toolbar(self.aabb)))
-        self.MultipletButtons = RadioFrame(self,
-                                           buttons=multiplet_buttons,
-                                           title='Multiplet')
-        self.MultipletButtons.grid(row=0, column=0, sticky=N)
-        self.ab = AB_Bar(TopFrame)
-        self.ab2 = AB2_Bar(TopFrame)
-        self.abx = ABX_Bar(TopFrame)
-        self.abx3 = ABX3_Bar(TopFrame)
-        self.aaxx = AAXX_Bar(TopFrame)
-        self.firstorder = FirstOrder_Bar(TopFrame)
-        self.aabb = AABB_Bar(TopFrame)
+    # def add_multiplet_buttons(self):
+    #     """"'Multiplet' menu: 'canned' solutions for common spin systems"""
+    #     multiplet_buttons = (('AB', lambda: self.select_toolbar(self.ab)),
+    #                          ('AB2', lambda: self.select_toolbar(self.ab2)),
+    #                          ('ABX', lambda: self.select_toolbar(self.abx)),
+    #                          ('ABX3', lambda: self.select_toolbar(self.abx3)),
+    #                          ("AA'XX'", lambda: self.select_toolbar(self.aaxx)),
+    #                          ('1stOrd',
+    #                           lambda: self.select_toolbar(self.firstorder)),
+    #                          ("AA'BB'", lambda: self.select_toolbar(self.aabb)))
+    #     self.MultipletButtons = RadioFrame(self,
+    #                                        buttons=multiplet_buttons,
+    #                                        title='Multiplet')
+    #     self.MultipletButtons.grid(row=0, column=0, sticky=N)
+    #     self.ab = AB_Bar(TopFrame)
+    #     self.ab2 = AB2_Bar(TopFrame)
+    #     self.abx = ABX_Bar(TopFrame)
+    #     self.abx3 = ABX3_Bar(TopFrame)
+    #     self.aaxx = AAXX_Bar(TopFrame)
+    #     self.firstorder = FirstOrder_Bar(TopFrame)
+    #     self.aabb = AABB_Bar(TopFrame)
 
     def add_abc_buttons(self):
         """ 'ABC...' menu: Quantum Mechanics approach"""
-        abc_buttons = (('AB', lambda: self.select_toolbar(self.ab)),
-                       ('3-Spin', lambda: self.select_toolbar(self.spin3)),
-                       ('4-Spin', lambda: self.select_toolbar(self.spin4)),
-                       ('5-Spin', lambda: self.select_toolbar(self.spin5)),
-                       ('6-Spin', lambda: self.select_toolbar(self.spin6)),
-                       ('7-Spin', lambda: self.select_toolbar(self.spin7)),
-                       ('8-Spin', lambda: self.select_toolbar(self.spin8)))
+        abc_buttons = (('2', lambda: self.select_toolbar(self.ab)),
+                       ('3', lambda: self.select_toolbar(self.spin3)),
+                       ('4', lambda: self.select_toolbar(self.spin4)),
+                       ('5', lambda: self.select_toolbar(self.spin5)),
+                       ('6', lambda: self.select_toolbar(self.spin6)),
+                       ('7', lambda: self.select_toolbar(self.spin7)),
+                       ('8', lambda: self.select_toolbar(self.spin8)))
         # 'Custom' omitted for now
         self.ABC_Buttons = RadioFrame(self,
                                       buttons=abc_buttons,
-                                      title='2-8 Spins')
+                                      title='Number of Spins')
+        self.ABC_Buttons.grid(row=0, column=0, sticky=N)
         self.ab = AB_Bar(TopFrame)
         self.spin3 = nSpinBar(TopFrame, n=3)
         self.spin4 = nSpinBar(TopFrame, n=4)
@@ -165,14 +167,14 @@ class ModelFrames(GuiMixin, Frame):
     #     # Custom: not implemented yet. Placeholder follows
     #     self.Custom = Label(self, text='Custom models not implemented yet')
 
-    def select_frame(self, frame):
-        if frame != self.currentframe:
-            self.framedic[self.currentframe].grid_remove()
-            self.currentframe = frame
-            self.framedic[self.currentframe].grid()
-
-            # retrieve and select current active bar of frame
-            self.select_toolbar(self.active_bar_dict[self.currentframe])
+    # def select_frame(self, frame):
+    #     if frame != self.currentframe:
+    #         self.framedic[self.currentframe].grid_remove()
+    #         self.currentframe = frame
+    #         self.framedic[self.currentframe].grid()
+    #
+    #         # retrieve and select current active bar of frame
+    #         self.select_toolbar(self.active_bar_dict[self.currentframe])
 
     def select_toolbar(self, toolbar):
         self.currentbar.grid_remove()
@@ -191,7 +193,7 @@ class ModelFrames(GuiMixin, Frame):
 #     """
 #     A frame object that will contain multiple toolbars gridded to (0,0).
 #     It will maintain add deque of [current, last] toolbars used. When add new model
-#     is selected by ModelFrames, the new ToolBar is added to the front of the
+#     is selected by ModelFrame, the new ToolBar is added to the front of the
 #     deque and .grid(), the current toolbar is pushed down to the last
 #     position and .grid_remove(), and the previous last toolbar is knocked out
 #     of the deque.
@@ -386,11 +388,11 @@ class nSpinBar(Frame):
 #         canvas.plot(x, y)
 
 
-class EmptyToolBar(Frame):
-    def __init__(self, parent=None, name='noname', **options):
-        Frame.__init__(self, parent, **options)
-        Label(self, text=name + ' model not implemented yet').pack()
-        self.pack()
+# class EmptyToolBar(Frame):
+#     def __init__(self, parent=None, name='noname', **options):
+#         Frame.__init__(self, parent, **options)
+#         Label(self, text=name + ' model not implemented yet').pack()
+#         self.pack()
 
 
 class VarBox(Frame):
@@ -764,80 +766,80 @@ class ArrayBox(Frame):
     """
 
 
-class IntBox(Frame):
-    """
-    A modification of VarBox code. Restricts inputs to integers.
-    Inputs:
-    -text: appears above the entry box
-    -default: default value in entry
-    """
-
-    # Future refactor options: either create add base class for an input box
-    # that varies in its input restriction (float, int, str etc), and/or
-    # look into tkinter built-in entry boxes as component.
-    def __init__(self, parent=None, name='', default=0.00, **options):
-        Frame.__init__(self, parent, relief=RIDGE, borderwidth=1, **options)
-        Label(self, text=name).pack(side=TOP, expand=NO, fill=NONE)
-        self.widgetName = name  # will be key in dictionary
-
-        # Entries will be limited to numerical
-        ent = Entry(self, width=7, validate='key')  # check for int on keypress
-        ent.pack(side=TOP, expand=NO, fill=NONE)
-        self.value = StringVar()
-        ent.config(textvariable=self.value)
-        self.value.set(str(default))
-        ent.bind('<Return>', lambda event: self.on_event(event))
-        ent.bind('<FocusOut>', lambda event: self.on_event(event))
-
-        # check on each keypress if new result will be add number
-        ent['validatecommand'] = (self.register(self.is_int), '%P')
-        # sound 'bell' if bad keypress
-        ent['invalidcommand'] = 'bell'
-
-    @staticmethod
-    def is_int(entry):
-        """
-        tests to see if entry string can be converted to base
-        """
-        if not entry:
-            return True  # Empty string: OK if entire entry deleted
-        try:
-            int(entry)
-            return True
-        except ValueError:
-            return False
-
-    def on_event(self, event):
-        """
-        On event: Records widget's status to the container's dictionary of
-        values, fills the entry with 0 if it was empty, tells the container
-        to send data to the model, and shifts focus to the next entry box (after
-        Return or Tab).
-        """
-        self.to_dict()
-        self.master.call_model()
-        event.widget.tk_focusNext().focus()
-
-    def to_dict(self):
-        """
-        Converts entry to base, and stores data in container's vars
-        dictionary.
-        """
-        if not self.value.get():  # if entry left blank,
-            self.value.set(0)  # fill it with zero
-        # Add the widget's status to the container's dictionary
-        self.master.vars[self.widgetName] = int(self.value.get())
-
-    # def warw(bar): pass
-    """
-    Many of the models include Wa (width), Right-Hz, and WdthHz boxes.
-    This function tacks these boxes onto add ToolBar.
-    Input:
-    -ToolBar that has been filled out
-    Output:
-    -frame with these three boxes and default values left-packed on end
-    ***actually, this could be add function in the ToolBar class definition!
-    """
+# class IntBox(Frame):
+#     """
+#     A modification of VarBox code. Restricts inputs to integers.
+#     Inputs:
+#     -text: appears above the entry box
+#     -default: default value in entry
+#     """
+#
+#     # Future refactor options: either create add base class for an input box
+#     # that varies in its input restriction (float, int, str etc), and/or
+#     # look into tkinter built-in entry boxes as component.
+#     def __init__(self, parent=None, name='', default=0.00, **options):
+#         Frame.__init__(self, parent, relief=RIDGE, borderwidth=1, **options)
+#         Label(self, text=name).pack(side=TOP, expand=NO, fill=NONE)
+#         self.widgetName = name  # will be key in dictionary
+#
+#         # Entries will be limited to numerical
+#         ent = Entry(self, width=7, validate='key')  # check for int on keypress
+#         ent.pack(side=TOP, expand=NO, fill=NONE)
+#         self.value = StringVar()
+#         ent.config(textvariable=self.value)
+#         self.value.set(str(default))
+#         ent.bind('<Return>', lambda event: self.on_event(event))
+#         ent.bind('<FocusOut>', lambda event: self.on_event(event))
+#
+#         # check on each keypress if new result will be add number
+#         ent['validatecommand'] = (self.register(self.is_int), '%P')
+#         # sound 'bell' if bad keypress
+#         ent['invalidcommand'] = 'bell'
+#
+#     @staticmethod
+#     def is_int(entry):
+#         """
+#         tests to see if entry string can be converted to base
+#         """
+#         if not entry:
+#             return True  # Empty string: OK if entire entry deleted
+#         try:
+#             int(entry)
+#             return True
+#         except ValueError:
+#             return False
+#
+#     def on_event(self, event):
+#         """
+#         On event: Records widget's status to the container's dictionary of
+#         values, fills the entry with 0 if it was empty, tells the container
+#         to send data to the model, and shifts focus to the next entry box (after
+#         Return or Tab).
+#         """
+#         self.to_dict()
+#         self.master.call_model()
+#         event.widget.tk_focusNext().focus()
+#
+#     def to_dict(self):
+#         """
+#         Converts entry to base, and stores data in container's vars
+#         dictionary.
+#         """
+#         if not self.value.get():  # if entry left blank,
+#             self.value.set(0)  # fill it with zero
+#         # Add the widget's status to the container's dictionary
+#         self.master.vars[self.widgetName] = int(self.value.get())
+#
+#     # def warw(bar): pass
+#     """
+#     Many of the models include Wa (width), Right-Hz, and WdthHz boxes.
+#     This function tacks these boxes onto add ToolBar.
+#     Input:
+#     -ToolBar that has been filled out
+#     Output:
+#     -frame with these three boxes and default values left-packed on end
+#     ***actually, this could be add function in the ToolBar class definition!
+#     """
 
 
 class AB_Bar(ToolBar):
@@ -869,231 +871,231 @@ class AB_Bar(ToolBar):
         canvas.plot(x, y)
 
 
-class AB2_Bar(ToolBar):
-    """
-    Creates add bar of AB2 spin system inputs. Currently assumes "canvas" is the
-    MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.AB2
-    """
+# class AB2_Bar(ToolBar):
+#     """
+#     Creates add bar of AB2 spin system inputs. Currently assumes "canvas" is the
+#     MPLGraph instance.
+#     Dependencies: nmrplot.tkplot, nmrmath.AB2
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Jab = VarBox(self, name='Jab', default=12.00)
+#         Vab = VarBox(self, name='Vab', default=15.00)
+#         Vcentr = VarBox(self, name='Vcentr', default=150)
+#         Jab.pack(side=LEFT)
+#         Vab.pack(side=LEFT)
+#         Vcentr.pack(side=LEFT)
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Jab = self.vars['Jab']
+#         _Vab = self.vars['Vab']
+#         _Vcentr = self.vars['Vcentr']
+#         spectrum = AB2(_Jab, _Vab, _Vcentr, Wa=0.5, RightHz=0, WdthHz=300)
+#         x, y = tkplot(spectrum)
+#         canvas.clear()
+#         canvas.plot(x, y)
+#
+#
+# class ABX_Bar(ToolBar):
+#     """
+#     Creates add bar of ABX spin system inputs. Currently assumes "canvas" is the
+#     MPLGraph instance.
+#     Dependencies: nmrplot.tkplot, nmrmath.ABX
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Jab = VarBox(self, name='Jab', default=12.00)
+#         Jax = VarBox(self, name='Jax', default=2.00)
+#         Jbx = VarBox(self, name='Jbx', default=8.00)
+#         Vab = VarBox(self, name='Vab', default=15.00)
+#         Vcentr = VarBox(self, name='Vcentr', default=118)
+#         Jab.pack(side=LEFT)
+#         Jax.pack(side=LEFT)
+#         Jbx.pack(side=LEFT)
+#         Vab.pack(side=LEFT)
+#         Vcentr.pack(side=LEFT)
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Jab = self.vars['Jab']
+#         _Jax = self.vars['Jax']
+#         _Jbx = self.vars['Jbx']
+#         _Vab = self.vars['Vab']
+#         _Vcentr = self.vars['Vcentr']
+#         spectrum = ABX(_Jab, _Jax, _Jbx, _Vab, _Vcentr, Wa=0.5, RightHz=0,
+#                        WdthHz=300)
+#         x, y = tkplot(spectrum)
+#         canvas.clear()
+#         canvas.plot(x, y)
+#
+#
+# class ABX3_Bar(ToolBar):
+#     """
+#     Creates add bar of ABX3 spin system inputs. Currently assumes "canvas" is the
+#     MPLGraph instance.
+#     Dependencies: nmrplot.tkplot, nmrmath.ABX3
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Jab = VarBox(self, name='Jab', default=-12.00)
+#         Jax = VarBox(self, name='Jax', default=7.00)
+#         Jbx = VarBox(self, name='Jbx', default=7.00)
+#         Vab = VarBox(self, name='Vab', default=14.00)
+#         Vcentr = VarBox(self, name='Vcentr', default=150)
+#         Jab.pack(side=LEFT)
+#         Jax.pack(side=LEFT)
+#         Jbx.pack(side=LEFT)
+#         Vab.pack(side=LEFT)
+#         Vcentr.pack(side=LEFT)
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Jab = self.vars['Jab']
+#         _Jax = self.vars['Jax']
+#         _Jbx = self.vars['Jbx']
+#         _Vab = self.vars['Vab']
+#         _Vcentr = self.vars['Vcentr']
+#         spectrum = ABX3(_Jab, _Jax, _Jbx, _Vab, _Vcentr, Wa=0.5, RightHz=0,
+#                         WdthHz=300)
+#         x, y = tkplot(spectrum)
+#         canvas.clear()
+#         canvas.plot(x, y)
+#
+#
+# class AAXX_Bar(ToolBar):
+#     """
+#     Creates add bar of AA'XX' spin system inputs. Currently assumes "canvas" is
+#     the MPLGraph instance.
+#     Dependencies: nmrplot.tkplot, nmrmath.AAXX
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Jaa = VarBox(self, name="JAA'", default=15.00)
+#         Jxx = VarBox(self, name="JXX'", default=-10.00)
+#         Jax = VarBox(self, name="JAX", default=40.00)
+#         Jax_prime = VarBox(self, name="JAX'", default=6.00)
+#         Vcentr = VarBox(self, name="Vcentr", default=150)
+#         Jaa.pack(side=LEFT)
+#         Jxx.pack(side=LEFT)
+#         Jax.pack(side=LEFT)
+#         Jax_prime.pack(side=LEFT)
+#         Vcentr.pack(side=LEFT)
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Jaa = self.vars["JAA'"]
+#         _Jxx = self.vars["JXX'"]
+#         _Jax = self.vars["JAX"]
+#         _Jax_prime = self.vars["JAX'"]
+#         _Vcentr = self.vars["Vcentr"]
+#         spectrum = AAXX(_Jaa, _Jxx, _Jax, _Jax_prime, _Vcentr,
+#                         Wa=0.5, RightHz=0, WdthHz=300)
+#         x, y = tkplot(spectrum)
+#         canvas.clear()
+#         canvas.plot(x, y)
+#
+#
+# class AABB_Bar(ToolBar):
+#     """
+#     Creates add bar of AA'BB' spin system inputs. Currently assumes "canvas" is
+#     the MPLGraph instance.
+#     Dependencies: nmrplot.tkplot, nmrmath.AABB
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Vab = VarBox(self, name='VAB', default=40.00)
+#         Jaa = VarBox(self, name="JAA'", default=15.00)
+#         Jbb = VarBox(self, name="JBB'", default=-10.00)
+#         Jab = VarBox(self, name="JAB", default=40.00)
+#         Jab_prime = VarBox(self, name="JAB'", default=6.00)
+#         Vcentr = VarBox(self, name="Vcentr", default=150)
+#         Vab.pack(side=LEFT)
+#         Jaa.pack(side=LEFT)
+#         Jbb.pack(side=LEFT)
+#         Jab.pack(side=LEFT)
+#         Jab_prime.pack(side=LEFT)
+#         Vcentr.pack(side=LEFT)
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Vab = self.vars['VAB']
+#         _Jaa = self.vars["JAA'"]
+#         _Jbb = self.vars["JBB'"]
+#         _Jab = self.vars["JAB"]
+#         _Jab_prime = self.vars["JAB'"]
+#         _Vcentr = self.vars["Vcentr"]
+#         spectrum = AABB(_Vab, _Jaa, _Jbb, _Jab, _Jab_prime, _Vcentr,
+#                         Wa=0.5, RightHz=0, WdthHz=300)
+#         x, y = tkplot(spectrum)
+#         canvas.clear()
+#         canvas.plot(x, y)
 
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Jab = VarBox(self, name='Jab', default=12.00)
-        Vab = VarBox(self, name='Vab', default=15.00)
-        Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jab.pack(side=LEFT)
-        Vab.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
 
-    def call_model(self):
-        _Jab = self.vars['Jab']
-        _Vab = self.vars['Vab']
-        _Vcentr = self.vars['Vcentr']
-        spectrum = AB2(_Jab, _Vab, _Vcentr, Wa=0.5, RightHz=0, WdthHz=300)
-        x, y = tkplot(spectrum)
-        canvas.clear()
-        canvas.plot(x, y)
-
-
-class ABX_Bar(ToolBar):
-    """
-    Creates add bar of ABX spin system inputs. Currently assumes "canvas" is the
-    MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.ABX
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Jab = VarBox(self, name='Jab', default=12.00)
-        Jax = VarBox(self, name='Jax', default=2.00)
-        Jbx = VarBox(self, name='Jbx', default=8.00)
-        Vab = VarBox(self, name='Vab', default=15.00)
-        Vcentr = VarBox(self, name='Vcentr', default=118)
-        Jab.pack(side=LEFT)
-        Jax.pack(side=LEFT)
-        Jbx.pack(side=LEFT)
-        Vab.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Jab = self.vars['Jab']
-        _Jax = self.vars['Jax']
-        _Jbx = self.vars['Jbx']
-        _Vab = self.vars['Vab']
-        _Vcentr = self.vars['Vcentr']
-        spectrum = ABX(_Jab, _Jax, _Jbx, _Vab, _Vcentr, Wa=0.5, RightHz=0,
-                       WdthHz=300)
-        x, y = tkplot(spectrum)
-        canvas.clear()
-        canvas.plot(x, y)
-
-
-class ABX3_Bar(ToolBar):
-    """
-    Creates add bar of ABX3 spin system inputs. Currently assumes "canvas" is the
-    MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.ABX3
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Jab = VarBox(self, name='Jab', default=-12.00)
-        Jax = VarBox(self, name='Jax', default=7.00)
-        Jbx = VarBox(self, name='Jbx', default=7.00)
-        Vab = VarBox(self, name='Vab', default=14.00)
-        Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jab.pack(side=LEFT)
-        Jax.pack(side=LEFT)
-        Jbx.pack(side=LEFT)
-        Vab.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Jab = self.vars['Jab']
-        _Jax = self.vars['Jax']
-        _Jbx = self.vars['Jbx']
-        _Vab = self.vars['Vab']
-        _Vcentr = self.vars['Vcentr']
-        spectrum = ABX3(_Jab, _Jax, _Jbx, _Vab, _Vcentr, Wa=0.5, RightHz=0,
-                        WdthHz=300)
-        x, y = tkplot(spectrum)
-        canvas.clear()
-        canvas.plot(x, y)
-
-
-class AAXX_Bar(ToolBar):
-    """
-    Creates add bar of AA'XX' spin system inputs. Currently assumes "canvas" is
-    the MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.AAXX
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Jaa = VarBox(self, name="JAA'", default=15.00)
-        Jxx = VarBox(self, name="JXX'", default=-10.00)
-        Jax = VarBox(self, name="JAX", default=40.00)
-        Jax_prime = VarBox(self, name="JAX'", default=6.00)
-        Vcentr = VarBox(self, name="Vcentr", default=150)
-        Jaa.pack(side=LEFT)
-        Jxx.pack(side=LEFT)
-        Jax.pack(side=LEFT)
-        Jax_prime.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Jaa = self.vars["JAA'"]
-        _Jxx = self.vars["JXX'"]
-        _Jax = self.vars["JAX"]
-        _Jax_prime = self.vars["JAX'"]
-        _Vcentr = self.vars["Vcentr"]
-        spectrum = AAXX(_Jaa, _Jxx, _Jax, _Jax_prime, _Vcentr,
-                        Wa=0.5, RightHz=0, WdthHz=300)
-        x, y = tkplot(spectrum)
-        canvas.clear()
-        canvas.plot(x, y)
-
-
-class AABB_Bar(ToolBar):
-    """
-    Creates add bar of AA'BB' spin system inputs. Currently assumes "canvas" is
-    the MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.AABB
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Vab = VarBox(self, name='VAB', default=40.00)
-        Jaa = VarBox(self, name="JAA'", default=15.00)
-        Jbb = VarBox(self, name="JBB'", default=-10.00)
-        Jab = VarBox(self, name="JAB", default=40.00)
-        Jab_prime = VarBox(self, name="JAB'", default=6.00)
-        Vcentr = VarBox(self, name="Vcentr", default=150)
-        Vab.pack(side=LEFT)
-        Jaa.pack(side=LEFT)
-        Jbb.pack(side=LEFT)
-        Jab.pack(side=LEFT)
-        Jab_prime.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Vab = self.vars['VAB']
-        _Jaa = self.vars["JAA'"]
-        _Jbb = self.vars["JBB'"]
-        _Jab = self.vars["JAB"]
-        _Jab_prime = self.vars["JAB'"]
-        _Vcentr = self.vars["Vcentr"]
-        spectrum = AABB(_Vab, _Jaa, _Jbb, _Jab, _Jab_prime, _Vcentr,
-                        Wa=0.5, RightHz=0, WdthHz=300)
-        x, y = tkplot(spectrum)
-        canvas.clear()
-        canvas.plot(x, y)
-
-
-class FirstOrder_Bar(ToolBar):
-    """
-    Creates add bar of first-order coupling inputs. Currently assumes "canvas"
-    is the MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.first_order
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Jax = VarBox(self, name='JAX', default=7.00)
-        a = IntBox(self, name='#A', default=2)
-        Jbx = VarBox(self, name='JBX', default=3.00)
-        b = IntBox(self, name='#B', default=1)
-        Jcx = VarBox(self, name='JCX', default=2.00)
-        c = IntBox(self, name='#C', default=0)
-        Jdx = VarBox(self, name='JDX', default=7.00)
-        d = IntBox(self, name='#D', default=0)
-        Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jax.pack(side=LEFT)
-        a.pack(side=LEFT)
-        Jbx.pack(side=LEFT)
-        b.pack(side=LEFT)
-        Jcx.pack(side=LEFT)
-        c.pack(side=LEFT)
-        Jdx.pack(side=LEFT)
-        d.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Jax = self.vars['JAX']
-        _a = self.vars['#A']
-        _Jbx = self.vars['JBX']
-        _b = self.vars['#B']
-        _Jcx = self.vars['JCX']
-        _c = self.vars['#C']
-        _Jdx = self.vars['JDX']
-        _d = self.vars['#D']
-        _Vcentr = self.vars['Vcentr']
-        singlet = (_Vcentr, 1)  # using default intensity of 1
-        allcouplings = [(_Jax, _a), (_Jbx, _b), (_Jcx, _c), (_Jdx, _d)]
-        couplings = [coupling for coupling in allcouplings if coupling[1] != 0]
-        spectrum = first_order(singlet, couplings,
-                               Wa=0.5, RightHz=0, WdthHz=300)
-        x, y = tkplot(spectrum)
-        canvas.clear()
-        canvas.plot(x, y)
+# class FirstOrder_Bar(ToolBar):
+#     """
+#     Creates add bar of first-order coupling inputs. Currently assumes "canvas"
+#     is the MPLGraph instance.
+#     Dependencies: nmrplot.tkplot, nmrmath.first_order
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Jax = VarBox(self, name='JAX', default=7.00)
+#         a = IntBox(self, name='#A', default=2)
+#         Jbx = VarBox(self, name='JBX', default=3.00)
+#         b = IntBox(self, name='#B', default=1)
+#         Jcx = VarBox(self, name='JCX', default=2.00)
+#         c = IntBox(self, name='#C', default=0)
+#         Jdx = VarBox(self, name='JDX', default=7.00)
+#         d = IntBox(self, name='#D', default=0)
+#         Vcentr = VarBox(self, name='Vcentr', default=150)
+#         Jax.pack(side=LEFT)
+#         a.pack(side=LEFT)
+#         Jbx.pack(side=LEFT)
+#         b.pack(side=LEFT)
+#         Jcx.pack(side=LEFT)
+#         c.pack(side=LEFT)
+#         Jdx.pack(side=LEFT)
+#         d.pack(side=LEFT)
+#         Vcentr.pack(side=LEFT)
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Jax = self.vars['JAX']
+#         _a = self.vars['#A']
+#         _Jbx = self.vars['JBX']
+#         _b = self.vars['#B']
+#         _Jcx = self.vars['JCX']
+#         _c = self.vars['#C']
+#         _Jdx = self.vars['JDX']
+#         _d = self.vars['#D']
+#         _Vcentr = self.vars['Vcentr']
+#         singlet = (_Vcentr, 1)  # using default intensity of 1
+#         allcouplings = [(_Jax, _a), (_Jbx, _b), (_Jcx, _c), (_Jdx, _d)]
+#         couplings = [coupling for coupling in allcouplings if coupling[1] != 0]
+#         spectrum = first_order(singlet, couplings,
+#                                Wa=0.5, RightHz=0, WdthHz=300)
+#         x, y = tkplot(spectrum)
+#         canvas.clear()
+#         canvas.plot(x, y)
 
 
 class MPLgraph(FigureCanvasTkAgg):
@@ -1141,9 +1143,9 @@ canvas = MPLgraph(f, root)
 #CalcTypeFrame(sideFrame, relief=SUNKEN, borderwidth=1).pack(side=TOP,
                                                             #expand=NO,
                                                             #fill=X)
-Models = ModelFrames(sideFrame, relief=SUNKEN, borderwidth=1)
+Models = ModelFrame(sideFrame, relief=SUNKEN, borderwidth=1)
 Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
-Models.select_frame('abc')
+#Models.select_frame('abc')
 # The clickyFrame for clicking on peaks and calculating frequency differences
 # will not be implemented until much later:
 # clickyFrame = Frame(sideFrame, relief=SUNKEN, borderwidth=1)
