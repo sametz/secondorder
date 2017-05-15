@@ -27,6 +27,13 @@ The project is pre-alpha and subject to change. The master branch should
 maintain a functional program. If you're curious, and have a Python 3
 installation, you can download the project folders, install the requirements in requirements.txt if necessary, and run main.py from the command line.
 
+TODO
+====
+
+See CHANGELOG.rst for the map towards a version 1.0. In addition, there is
+much code refactoring (e.g. to a Model-View-Controller architecture) and
+cleanup required.
+
 Feedback
 ========
 
