@@ -45,22 +45,22 @@ class RadioFrame(Frame):
 
 
 # noinspection PyUnusedLocal
-class CalcTypeFrame(GuiMixin, RadioFrame):
-    """ Defines the Calc Type button frame for the upper left corner"""
-
-    def __init__(self, parent=None, **options):
-        title = 'Calc Type'
-        buttons = (('Multiplet',
-                    lambda: Models.select_frame('multiplet')),
-                   ('ABC...',
-                    lambda: Models.select_frame('abc')),
-                   ('DNMR', lambda: Models.select_frame('dnmr')),
-                   ('Custom', lambda: Models.select_frame('custom')))
-        RadioFrame.__init__(self, parent, buttons=buttons, title=title)
-
-    def show_selection(self):
-        """for debugging"""
-        self.infobox(self.var.get(), self.var.get())
+# class CalcTypeFrame(GuiMixin, RadioFrame):
+#     """ Defines the Calc Type button frame for the upper left corner"""
+#
+#     def __init__(self, parent=None, **options):
+#         title = 'Calc Type'
+#         buttons = (('Multiplet',
+#                     lambda: Models.select_frame('multiplet')),
+#                    ('ABC...',
+#                     lambda: Models.select_frame('abc')),
+#                    ('DNMR', lambda: Models.select_frame('dnmr')),
+#                    ('Custom', lambda: Models.select_frame('custom')))
+#         RadioFrame.__init__(self, parent, buttons=buttons, title=title)
+#
+#     def show_selection(self):
+#         """for debugging"""
+#         self.infobox(self.var.get(), self.var.get())
 
 
 class ModelFrames(GuiMixin, Frame):
@@ -78,24 +78,28 @@ class ModelFrames(GuiMixin, Frame):
 
         self.add_multiplet_buttons()  # Creates 'Multiplet' radio button menu
         self.add_abc_buttons()  # Creates 'ABC...' radio button menu
-        self.add_dnmr_buttons()  # Creates 'DNMR' radio button menu
-        self.add_custom_buttons()  # Creates 'Custom' radio bar menu
+        #self.add_dnmr_buttons()  # Creates 'DNMR' radio button menu
+        #self.add_custom_buttons()  # Creates 'Custom' radio bar menu
 
         # framedic used by CalcTypeFrame to control individual frames
         self.framedic = {'multiplet': self.MultipletButtons,
-                         'abc': self.ABC_Buttons,
-                         'dnmr': self.DNMR_Buttons,
-                         'custom': self.Custom}
+                         'abc': self.ABC_Buttons#,
+                         #'dnmr': self.DNMR_Buttons,
+                         #'custom': self.Custom
+                        }
 
         # active_bar_dict used to keep track of the active model in each
         # individual button menu.
-        self.active_bar_dict = {'multiplet': self.ab,
-                                'abc': self.ab,
-                                'dnmr': self.TwoSpinBar,
-                                'custom': self.ab}
+        self.active_bar_dict = {#'multiplet': self.ab,
+                                'abc': self.ab#,
+                                #'dnmr': self.TwoSpinBar,
+                                #'custom': self.ab
+                               }
 
         # Initialize with default frame and toolbar
         self.currentframe = 'multiplet'
+        #self.currentframe = 'abc'
+        self.select_frame('multiplet')
         self.currentbar = self.ab  # On program start, simulation set to ABq
         self.currentbar.grid(sticky=W)
         self.currentbar.call_model()
@@ -136,7 +140,8 @@ class ModelFrames(GuiMixin, Frame):
         # 'Custom' omitted for now
         self.ABC_Buttons = RadioFrame(self,
                                       buttons=abc_buttons,
-                                      title='2-7 Spins')
+                                      title='2-8 Spins')
+        self.ab = AB_Bar(TopFrame)
         self.spin3 = nSpinBar(TopFrame, n=3)
         self.spin4 = nSpinBar(TopFrame, n=4)
         self.spin5 = nSpinBar(TopFrame, n=5)
@@ -144,21 +149,21 @@ class ModelFrames(GuiMixin, Frame):
         self.spin7 = nSpinBar(TopFrame, n=7)
         self.spin8 = nSpinBar(TopFrame, n=8)
 
-    def add_dnmr_buttons(self):
-        """'DNMR': models for DNMR line shape analysis"""
-        dnmr_buttons = (('2-spin',
-                         lambda: self.select_toolbar(self.TwoSpinBar)),
-                        ('AB Coupled',
-                         lambda: self.select_toolbar(self.DNMR_AB_Bar)))
-        self.DNMR_Buttons = RadioFrame(self,
-                                       buttons=dnmr_buttons,
-                                       title='DNMR')
-        self.TwoSpinBar = DNMR_TwoSingletBar(TopFrame)
-        self.DNMR_AB_Bar = DNMR_AB_Bar(TopFrame)
+    # def add_dnmr_buttons(self):
+    #     """'DNMR': models for DNMR line shape analysis"""
+    #     dnmr_buttons = (('2-spin',
+    #                      lambda: self.select_toolbar(self.TwoSpinBar)),
+    #                     ('AB Coupled',
+    #                      lambda: self.select_toolbar(self.DNMR_AB_Bar)))
+    #     self.DNMR_Buttons = RadioFrame(self,
+    #                                    buttons=dnmr_buttons,
+    #                                    title='DNMR')
+    #     self.TwoSpinBar = DNMR_TwoSingletBar(TopFrame)
+    #     self.DNMR_AB_Bar = DNMR_AB_Bar(TopFrame)
 
-    def add_custom_buttons(self):
-        # Custom: not implemented yet. Placeholder follows
-        self.Custom = Label(self, text='Custom models not implemented yet')
+    # def add_custom_buttons(self):
+    #     # Custom: not implemented yet. Placeholder follows
+    #     self.Custom = Label(self, text='Custom models not implemented yet')
 
     def select_frame(self, frame):
         if frame != self.currentframe:
@@ -181,38 +186,38 @@ class ModelFrames(GuiMixin, Frame):
             print('No model yet for this bar')
 
 
-# ToolBox no longer needed? Delete?
-class ToolBox(Frame):
-    """
-    A frame object that will contain multiple toolbars gridded to (0,0).
-    It will maintain add deque of [current, last] toolbars used. When add new model
-    is selected by ModelFrames, the new ToolBar is added to the front of the
-    deque and .grid(), the current toolbar is pushed down to the last
-    position and .grid_remove(), and the previous last toolbar is knocked out
-    of the deque.
-    """
-
-    def __init__(self, parent=None, **options):
-        Frame.__init__(self, parent, **options)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.toolbars = deque([], 2)
-
-    def add_toolbar(self, toolbar):
-        self.toolbars.appendleft(toolbar)
-        toolbar.grid(self)
-        if len(self.toolbars) > 1:
-            self.toolbars[1].grid_remove()
-
-
-# MultipletBox no longer needed? Delete?
-class MultipletBox(ToolBox):
-    """
-    A ToolBox for holding and controlling  add ToolBar for each Multiplet model.
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBox.__init__(self, parent, **options)
+# # ToolBox no longer needed? Delete?
+# class ToolBox(Frame):
+#     """
+#     A frame object that will contain multiple toolbars gridded to (0,0).
+#     It will maintain add deque of [current, last] toolbars used. When add new model
+#     is selected by ModelFrames, the new ToolBar is added to the front of the
+#     deque and .grid(), the current toolbar is pushed down to the last
+#     position and .grid_remove(), and the previous last toolbar is knocked out
+#     of the deque.
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         Frame.__init__(self, parent, **options)
+#         self.grid_rowconfigure(0, weight=1)
+#         self.grid_columnconfigure(0, weight=1)
+#         self.toolbars = deque([], 2)
+#
+#     def add_toolbar(self, toolbar):
+#         self.toolbars.appendleft(toolbar)
+#         toolbar.grid(self)
+#         if len(self.toolbars) > 1:
+#             self.toolbars[1].grid_remove()
+#
+#
+# # MultipletBox no longer needed? Delete?
+# class MultipletBox(ToolBox):
+#     """
+#     A ToolBox for holding and controlling  add ToolBar for each Multiplet model.
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBox.__init__(self, parent, **options)
 
 
 class ToolBar(Frame):
@@ -306,79 +311,79 @@ class nSpinBar(Frame):
         canvas.plot(x, y)
 
 
-class DNMR_TwoSingletBar(ToolBar):
-    """
-    DNMR simulation for 2 uncoupled exchanging nuclei.
-    -Va > Vb are the chemcial shifts (slow exchange limit)
-    -ka is the add-->b rate constant (note: WINDNMR uses ka + kb here)
-    -Wa, Wb are effectively T2a and T2b (check width at half height vs. T2s)
-    -pa is % of molecules in state add. Note for calculation need to /100 to
-    convert to mol fraction.
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Va = VarButtonBox(self, name='Va', default=165.00)
-        Vb = VarButtonBox(self, name='Vb', default=135.00)
-        ka = VarButtonBox(self, name='ka', default=1.50)
-        Wa = VarButtonBox(self, name='Wa', default=0.5)
-        Wb = VarButtonBox(self, name='Wb', default=0.5)
-        pa = VarButtonBox(self, name='%add', default=50)
-        for widget in [Va, Vb, ka, Wa, Wb, pa]:
-            widget.pack(side=LEFT)
-
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Va = self.vars['Va']
-        _Vb = self.vars['Vb']
-        _ka = self.vars['ka']
-        _Wa = self.vars['Wa']
-        _Wb = self.vars['Wb']
-        _pa = self.vars['%add'] / 100
-
-        x, y = dnmrplot_2spin(_Va, _Vb, _ka, _Wa, _Wb, _pa)
-        canvas.clear()
-        canvas.plot(x, y)
-
-
-class DNMR_AB_Bar(ToolBar):
-    """
-    DNMR simulation for 2 coupled exchanging nuclei.
-    -Va > Vb are the chemcial shifts (slow exchange limit)
-    -J is the coupling constant
-    -kAB is the exchange rate constant
-    -W is peak width at half-height in absence of exchange
-    """
-
-    def __init__(self, parent=None, **options):
-        ToolBar.__init__(self, parent, **options)
-        Va = VarButtonBox(self, name='Va', default=165.00)
-        Vb = VarButtonBox(self, name='Vb', default=135.00)
-        J = VarButtonBox(self, name='J', default=12.00)
-        kAB = VarButtonBox(self, name='kAB', default=1.50)
-        W_ = VarButtonBox(self, name='W',
-                          default=0.5)  # W is add tkinter string,
-        # so used W_
-        for widget in [Va, Vb, J, kAB, W_]:
-            widget.pack(side=LEFT)
-
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def call_model(self):
-        _Va = self.vars['Va']
-        _Vb = self.vars['Vb']
-        _J = self.vars['J']
-        _kAB = self.vars['kAB']
-        _W = self.vars['W']
-
-        x, y = dnmrplot_AB(_Va, _Vb, _J, _kAB, _W)
-        canvas.clear()
-        canvas.plot(x, y)
+# class DNMR_TwoSingletBar(ToolBar):
+#     """
+#     DNMR simulation for 2 uncoupled exchanging nuclei.
+#     -Va > Vb are the chemcial shifts (slow exchange limit)
+#     -ka is the add-->b rate constant (note: WINDNMR uses ka + kb here)
+#     -Wa, Wb are effectively T2a and T2b (check width at half height vs. T2s)
+#     -pa is % of molecules in state add. Note for calculation need to /100 to
+#     convert to mol fraction.
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Va = VarButtonBox(self, name='Va', default=165.00)
+#         Vb = VarButtonBox(self, name='Vb', default=135.00)
+#         ka = VarButtonBox(self, name='ka', default=1.50)
+#         Wa = VarButtonBox(self, name='Wa', default=0.5)
+#         Wb = VarButtonBox(self, name='Wb', default=0.5)
+#         pa = VarButtonBox(self, name='%add', default=50)
+#         for widget in [Va, Vb, ka, Wa, Wb, pa]:
+#             widget.pack(side=LEFT)
+#
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Va = self.vars['Va']
+#         _Vb = self.vars['Vb']
+#         _ka = self.vars['ka']
+#         _Wa = self.vars['Wa']
+#         _Wb = self.vars['Wb']
+#         _pa = self.vars['%add'] / 100
+#
+#         x, y = dnmrplot_2spin(_Va, _Vb, _ka, _Wa, _Wb, _pa)
+#         canvas.clear()
+#         canvas.plot(x, y)
+#
+#
+# class DNMR_AB_Bar(ToolBar):
+#     """
+#     DNMR simulation for 2 coupled exchanging nuclei.
+#     -Va > Vb are the chemcial shifts (slow exchange limit)
+#     -J is the coupling constant
+#     -kAB is the exchange rate constant
+#     -W is peak width at half-height in absence of exchange
+#     """
+#
+#     def __init__(self, parent=None, **options):
+#         ToolBar.__init__(self, parent, **options)
+#         Va = VarButtonBox(self, name='Va', default=165.00)
+#         Vb = VarButtonBox(self, name='Vb', default=135.00)
+#         J = VarButtonBox(self, name='J', default=12.00)
+#         kAB = VarButtonBox(self, name='kAB', default=1.50)
+#         W_ = VarButtonBox(self, name='W',
+#                           default=0.5)  # W is add tkinter string,
+#         # so used W_
+#         for widget in [Va, Vb, J, kAB, W_]:
+#             widget.pack(side=LEFT)
+#
+#         # initialize self.vars with toolbox defaults
+#         for child in self.winfo_children():
+#             child.to_dict()
+#
+#     def call_model(self):
+#         _Va = self.vars['Va']
+#         _Vb = self.vars['Vb']
+#         _J = self.vars['J']
+#         _kAB = self.vars['kAB']
+#         _W = self.vars['W']
+#
+#         x, y = dnmrplot_AB(_Va, _Vb, _J, _kAB, _W)
+#         canvas.clear()
+#         canvas.plot(x, y)
 
 
 class EmptyToolBar(Frame):
@@ -1119,6 +1124,7 @@ root.title('secondorder')  # working title only!
 # First, pack add sidebar frame to contain widgets
 sideFrame = Frame(root, relief=RIDGE, borderwidth=3)
 sideFrame.pack(side=LEFT, expand=NO, fill=Y)
+Label(sideFrame, text='placeholder').pack(side=TOP)
 
 # Next, pack the top frame where function variables will be entered
 TopFrame = Frame(root, relief=RIDGE, borderwidth=1)
@@ -1140,9 +1146,9 @@ Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
 Models.select_frame('abc')
 # The clickyFrame for clicking on peaks and calculating frequency differences
 # will not be implemented until much later:
-clickyFrame = Frame(sideFrame, relief=SUNKEN, borderwidth=1)
-clickyFrame.pack(side=TOP, expand=YES, fill=X)
-Label(clickyFrame, text='clickys go here').pack()
+# clickyFrame = Frame(sideFrame, relief=SUNKEN, borderwidth=1)
+# clickyFrame.pack(side=TOP, expand=YES, fill=X)
+# Label(clickyFrame, text='clickys go here').pack()
 
 # Now we can pack the canvas (want it to be clipped first)
 canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
