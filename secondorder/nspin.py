@@ -151,7 +151,7 @@ def reich_list():
     return spinsystem
 
 
-def get_reich_default(n):
+def getWINDNMRdefault(n):
     """
     Fetches the default (frequencies, J) tuple for the n-spin second-order
     simulation.
@@ -178,7 +178,7 @@ if __name__ == '__main__':
 
     # spinsystem_list = reich_list()
     # test_freqs, test_couplings = reich_list()[6]
-    test_freqs, test_couplings = get_reich_default(8)
+    test_freqs, test_couplings = getWINDNMRdefault(8)
     test_couplings = test_couplings.todense()
     test_spectrum = nspinspec(test_freqs, test_couplings)
     nmrplt(test_spectrum, y=25)

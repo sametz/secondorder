@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
 # implement the default mpl key bindings
 from matplotlib.figure import Figure
 from secondorder.model.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
-from secondorder.nspin import get_reich_default
+from secondorder.nspin import getWINDNMRdefault
 from tkinter import *
 from secondorder.GUI.guimixin import GuiMixin  # mix-in class that provides dev
 # tools
@@ -48,9 +48,8 @@ class RadioFrame(Frame):
 
 class ModelFrame(Frame):
     """
-    Creates a frame that stores and manages the individual button menus
-    for the different calc types, which will be selected by
-    CalcTypeFrame.
+    Creates a frame that stores and manages the button menu for selecting the 
+    number of nuclei.
     """
 
     def __init__(self, parent=None, **options):
@@ -66,9 +65,10 @@ class ModelFrame(Frame):
         self.currentbar.grid(sticky=W)
         self.currentbar.call_model()
 
-
     def add_abc_buttons(self):
-        """ 'ABC...' menu: Quantum Mechanics approach"""
+        """Populates the frame with a RadioFrame for selecting the number of 
+        nuclei and the corresponding toolbar.
+        """
         abc_buttons = (('2', lambda: self.select_toolbar(self.ab)),
                        ('3', lambda: self.select_toolbar(self.spin3)),
                        ('4', lambda: self.select_toolbar(self.spin4)),
@@ -124,14 +124,14 @@ class nSpinBar(Frame):
         n: number of spins
     Dependencies:
         nmrmath.nspinspec
-        nspin.get_reich_default for WINDNMR default values
+        nspin.getWINDNMRdefault for WINDNMR default values
         nmrplot.tkplot for displaying spectrum
     """
 
     def __init__(self, parent=None, n=4, **options):
         Frame.__init__(self, parent, **options)
         self.v_obj = np.zeros(n, dtype=object)
-        self.v, self.j = get_reich_default(n)
+        self.v, self.j = getWINDNMRdefault(n)
         for freq in range(n):
             vbox = ArrayBox(self, a=self.v, coord=(0, freq),
                             name='V' + str(freq + 1))
@@ -184,7 +184,7 @@ class nSpinBar(Frame):
 
 class VarBox(Frame):
     """
-    Eventually will emulate what the Reich entry box does, more or less.
+    Custom entry widget with a check for numerical input.
     Idea is to fill the VarFrame with these modules.
     Current version: checks that only numbers are entered; returns contents
     in a popup.
@@ -546,22 +546,22 @@ class AB_Bar(ToolBar):
 
 
 class MPLgraph(FigureCanvasTkAgg):
-    def __init__(self, f, master=None, **options):
-        FigureCanvasTkAgg.__init__(self, f, master, **options)
-        self.f = f
-        self.a = f.add_subplot(111)
-        self.a.invert_xaxis()
+    def __init__(self, figure, master=None, **options):
+        FigureCanvasTkAgg.__init__(self, figure, master, **options)
+        self.f = figure
+        self.add = figure.add_subplot(111)
+        self.add.invert_xaxis()
         self.show()
         self.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
         self.toolbar = NavigationToolbar2TkAgg(self, master)
         self.toolbar.update()
 
     def plot(self, x, y):
-        self.a.plot(x, y)
+        self.add.plot(x, y)
         self.f.canvas.draw()  # DRAW IS CRITICAL TO REFRESH
 
     def clear(self):
-        self.a.clear()
+        self.add.clear()
         self.f.canvas.draw()
 
 
@@ -602,4 +602,3 @@ while True:
         break
     except UnicodeDecodeError:
         pass
-

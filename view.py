@@ -10,7 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 from secondorder.model.nmrplot import tkplot, dnmrplot_2spin, dnmrplot_AB
-from secondorder.nspin import get_reich_default
+from secondorder.nspin import getWINDNMRdefault
 #from tkinter import *
 from secondorder.GUI.guimixin import GuiMixin  # mix-in class that provides dev
 # tools
@@ -250,14 +250,14 @@ class nSpinBar(tk.Frame):
         n: number of spins
     Dependencies:
         nmrmath.nspinspec
-        nspin.get_reich_default for WINDNMR default values
+        nspin.getWINDNMRdefault for WINDNMR default values
         nmrplot.tkplot for displaying spectrum
     """
 
     def __init__(self, parent=None, n=4, **options):
         tk.Frame.__init__(self, parent, **options)
         self.v_obj = np.zeros(n, dtype=object)
-        self.v, self.j = get_reich_default(n)
+        self.v, self.j = getWINDNMRdefault(n)
         for freq in range(n):
             vbox = ArrayBox(self, a=self.v, coord=(0, freq),
                             name='V' + str(freq + 1))
