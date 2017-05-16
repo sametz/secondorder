@@ -589,6 +589,8 @@ class View(Frame):
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = MPLgraph(self.figure, self)
         self.canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
+        Button(self, text="clear", command=lambda: self.canvas.clear()).pack(
+            side=BOTTOM)
 
     # The methods below provide the interface to the controller
 
@@ -614,35 +616,10 @@ class View(Frame):
 
 if __name__ == '__main__':
     # Create the main application window:
+    import controller
     root = Tk()
     root.title('secondorder')  # working title only!
-
-    # Create the basic GUI structure: sidebar, topbar, and display area
-    # First, pack a sidebar frame to contain widgets
-    sideFrame = Frame(root, relief=RIDGE, borderwidth=3)
-    sideFrame.pack(side=LEFT, expand=NO, fill=Y)
-
-    # Next, pack the top frame where function variables will be entered
-    TopFrame = Frame(root, relief=RIDGE, borderwidth=1)
-    TopFrame.pack(side=TOP, expand=NO, fill=X)
-    TopFrame.grid_rowconfigure(0, weight=1)
-    TopFrame.grid_columnconfigure(0, weight=1)
-
-    # Remaining lower right area will be for a Canvas or matplotlib spectrum frame
-    # Because we want the spectrum clipped first, will pack it last
-    f = Figure(figsize=(5, 4), dpi=100)
-    canvas = MPLgraph(f, root)
-
-    # Create sidebar widget:
-    Models = ModelFrame(sideFrame, controller=None,
-                        toolbar=TopFrame, relief=SUNKEN,
-                        borderwidth=1)
-    Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
-
-    # Now we can pack the canvas (want it to be clipped first)
-    canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
-
-    Button(root, text="clear", command=lambda: canvas.clear()).pack(side=BOTTOM)
+    Controller = controller.Controller(root)
 
     # workaround fix for Tk problems and mac mouse/trackpad:
     while True:
