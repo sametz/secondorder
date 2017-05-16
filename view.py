@@ -9,7 +9,7 @@ import numpy as np
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
-# implement the default mpl key bindings
+
 from matplotlib.figure import Figure
 from secondorder.model.nmrplot import tkplot
 from secondorder.initialize import getWINDNMRdefault
@@ -60,7 +60,7 @@ class ModelFrame(Frame):
         self.currentframe = 'abc'
         self.currentbar = self.ab  # On program start, simulation set to ABq
         self.currentbar.grid(sticky=W)
-        self.currentbar.call_model()
+        # self.currentbar.request_plot()  # Moved to View.initialize
 
     def add_abc_buttons(self):
         """Populates the frame with a RadioFrame for selecting the number of 
@@ -78,7 +78,7 @@ class ModelFrame(Frame):
                                       title='Number of Spins')
         self.ABC_Buttons.grid(row=0, column=0, sticky=N)
 
-        self.ab = AB_Bar(self.toolbar)
+        self.ab = AB_Bar(self.toolbar, controller=self.controller)
         self.spin3 = nSpinBar(self.toolbar, controller=self.controller, n=3)
         self.spin4 = nSpinBar(self.toolbar, controller=self.controller, n=4)
         self.spin5 = nSpinBar(self.toolbar, controller=self.controller, n=5)
@@ -93,7 +93,7 @@ class ModelFrame(Frame):
         # record current bar of currentframe:
         self.active_bar_dict[self.currentframe] = toolbar
         try:
-            self.currentbar.call_model()
+            self.currentbar.request_plot()
         except ValueError:
             print('No model yet for this bar')
 
@@ -101,14 +101,14 @@ class ModelFrame(Frame):
 class ToolBar(Frame):
     """
     A frame object that contains entry widgets, a dictionary of
-    their current contents, and a function to call the appropriate model.
+    their current contents, and a function to call the controller for an update.
     """
 
     def __init__(self, parent=None, **options):
         Frame.__init__(self, parent, **options)
         self.vars = {}
 
-    def call_model(self):
+    def request_plot(self):
         print('Sending to dummy_model: ', self.vars)
 
 
@@ -142,7 +142,7 @@ class nSpinBar(Frame):
     def vj_popup(self, n):
         tl = Toplevel()
         Label(tl, text='Second-Order Simulation').pack(side=TOP)
-        datagrid = ArrayFrame(tl, self.call_model, self.v_obj)
+        datagrid = ArrayFrame(tl, self.request_plot, self.v_obj)
 
         # For gridlines, background set to the line color (e.g. 'black')
         datagrid.config(background='black')
@@ -173,12 +173,12 @@ class nSpinBar(Frame):
 
         datagrid.pack()
 
-    def call_model(self):
-        # spectrum = self.controller('QM', (self.v[0, :], self.j))
+    def request_plot(self):
+        self.controller.update_view_plot('QM', (self.v[0, :], self.j))
         # x, y = tkplot(spectrum)
         # canvas.clear()
         # canvas.plot(x, y)
-        pass
+
 
 
 class VarBox(Frame):
@@ -239,13 +239,13 @@ class VarBox(Frame):
     def on_return(self, event):
         if self.entry_is_changed():
             self.to_dict()
-            self.master.call_model()
+            self.master.request_plot()
         event.widget.tk_focusNext().focus()
 
     def on_tab(self):
         if self.entry_is_changed():
             self.to_dict()
-            self.master.call_model()
+            self.master.request_plot()
 
     def to_dict(self):
         """
@@ -353,14 +353,14 @@ class VarButtonBox(Frame):
         """Records change to entry, calls model, and focuses on next widget"""
         if self.entry_is_changed():
             self.to_dict()
-            self.master.call_model()
+            self.master.request_plot()
         event.widget.tk_focusNext().focus()
 
     def on_tab(self):
         """Records change to entry, and calls model"""
         if self.entry_is_changed():
             self.to_dict()
-            self.master.call_model()
+            self.master.request_plot()
 
     def to_dict(self):
         """
@@ -415,7 +415,7 @@ class VarButtonBox(Frame):
 class ArrayFrame(Frame):
     """
     A frame used for holding a grid of ArrayBox entries, passing their
-    call_model requests up to the provided func, and passing changes to V
+    request_plot requests up to the provided func, and passing changes to V
     entries to the toolbar.
     Arguments:
         func: the actual function the ArrayBox calls to refresh model.
@@ -424,7 +424,7 @@ class ArrayFrame(Frame):
 
     def __init__(self, parent, func, v_obj, **options):
         Frame.__init__(self, parent, **options)
-        self.call_model = func
+        self.request_plot = func
         self.v_obj = v_obj
 
 
@@ -490,13 +490,13 @@ class ArrayBox(Frame):
     def on_return(self, event):
         if self.entry_is_changed():
             self.to_array()
-            self.master.call_model()
+            self.master.request_plot()
         event.widget.tk_focusNext().focus()
 
     def on_tab(self):
         if self.entry_is_changed():
             self.to_array()
-            self.master.call_model()
+            self.master.request_plot()
 
     def to_array(self):
         """
@@ -522,8 +522,9 @@ class AB_Bar(ToolBar):
     Dependencies: nmrplot.tkplot, nmrmath.AB
     """
 
-    def __init__(self, parent=None, **options):
+    def __init__(self, parent, controller, **options):
         ToolBar.__init__(self, parent, **options)
+        self.controller = controller
         Jab = VarBox(self, name='Jab', default=12.00)
         Vab = VarBox(self, name='Vab', default=15.00)
         Vcentr = VarBox(self, name='Vcentr', default=150)
@@ -534,12 +535,12 @@ class AB_Bar(ToolBar):
         for child in self.winfo_children():
             child.to_dict()
 
-    def call_model(self):
+    def request_plot(self):
         pass
-        # _Jab = self.vars['Jab']
-        # _Vab = self.vars['Vab']
-        # _Vcentr = self.vars['Vcentr']
-        # spectrum = AB(_Jab, _Vab, _Vcentr)
+        _Jab = self.vars['Jab']
+        _Vab = self.vars['Vab']
+        _Vcentr = self.vars['Vcentr']
+        self.controller.update_view_plot('AB', (_Jab, _Vab, _Vcentr))
         # x, y = tkplot(spectrum)
         # canvas.clear()
         # canvas.plot(x, y)
@@ -579,27 +580,24 @@ class View(Frame):
         TopFrame.grid_rowconfigure(0, weight=1)
         TopFrame.grid_columnconfigure(0, weight=1)
 
-        Models = ModelFrame(parent=sideFrame,
+        self.Models = ModelFrame(parent=sideFrame,
                             controller=self.controller,
                             toolbar=TopFrame,
                             relief=SUNKEN, borderwidth=1)
-        Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
+        self.Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
         Label(sideFrame, text='placeholder').pack()
         self.figure = Figure(figsize=(5, 4), dpi=100)
         self.canvas = MPLgraph(self.figure, self)
         self.canvas._tkcanvas.pack(anchor=SE, expand=YES, fill=BOTH)
 
-    # The three methods below provide the interface to the controller
-    def set_values(self, values):
-        """Used by the controller to initialize the view's entry values and
-        data.
+    # The methods below provide the interface to the controller
 
-        Argument:
-            values: a dict in self.values format
-        """
-        self.base.set(values['base'])
-        self.exponent.set(values['exponent'])
-        self.values = values
+    # To avoid a circular reference, a call to the Controller cannot be made
+    # until View is fully instantiated. Initializing the plot with a call to
+    # Controller is postponed by placing it in the following function and
+    # having the Controller call it when the View is ready.
+    def initialize(self):
+        self.Models.currentbar.request_plot()
 
     def clear(self):
         """ Erase the matplotlib canvas."""
