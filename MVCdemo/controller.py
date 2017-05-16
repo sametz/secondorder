@@ -11,7 +11,7 @@ Contains:
 
 import tkinter as tk
 
-from view import View
+from view_old import View
 
 from MVCdemo import model
 
