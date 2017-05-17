@@ -1,3 +1,13 @@
+"""
+The controller can be executed as the main secondorder app. 
+
+Assumes a tkinter view.
+
+Contains:
+
+* Controller    Class that handles data and requests to/from the model and 
+                the view.
+"""
 import tkinter as tk
 from secondorder.model.nmrmath import AB, nspinspec
 from secondorder.model.nmrplot import tkplot
@@ -5,8 +15,30 @@ from view import View
 
 
 class Controller:
-
+    """Instantiates secondorder's view, and passes data and requests to/from 
+    the model and the view.
+    
+    The controller assumes the view offers the following methods:
+    
+    * initialize()--Initializes the view. Currrently, just "OKs" the View 
+    to call Controller.update_view_plot after view's instantiation. 
+    
+    * clear()--clears the view's plot.
+    
+    * plot(x, y)--accept a tuple of x, y numpy arrays and plot the data.
+    
+    The controller provides the following methods:
+    
+    * update_view_plot: accepts a tuple of simulation name (string) and 
+    variables; calls the appropriate model simulation with the variables; 
+    and tells the view to plot the data the model returns.
+    """
     def __init__(self, root):
+        """Instantiates the view as a child of root, and then initializes it.
+        
+        Argument:
+            root: a tkinter.Tk() object
+        """
 
         self.view = View(root, self)
         self.view.pack(expand=tk.YES, fill=tk.BOTH)
@@ -20,7 +52,9 @@ class Controller:
             simulation: 'AB' (non-quantum mechanical AB quartet calculation
                         for 2 spins), or
                         'QM' (quantum-mechanical treatment for >= 3 spins)
-            data: //
+            data: for now assumes the View sends data of the exact type and 
+            format required by the model. This may not be proper MVC 
+            separation of concerns, however.
         """
         if simulation == 'AB':
             plotdata = tkplot(AB(*data))

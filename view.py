@@ -1,6 +1,9 @@
 """
 The main GUI, to be run as the main application.
 
+TODO: WINDNMR defaults should probably be passed from Controller via
+View.initialize()
+
 TODO: implement line widths
 """
 import matplotlib
@@ -24,13 +27,16 @@ right_arrow = u"\u21e8"
 
 class RadioFrame(Frame):
     """
-    Creates and packs radio button frames into parent.
-    arguments:
-    -buttons: a tuple of (text, function) tuples
-    -title: an optional title to put above the button list
+    A frame containing a radio button menu and optional title.
+
+    TODO: since this is a class with only an __init__, this should possibly
+    be a function and not a class. Refactor?
     """
 
     def __init__(self, parent=None, buttons=(), title='', **options):
+        """arguments:
+        buttons: a tuple of (text, function) tuples
+        title: an optional title to put above the button list"""
         Frame.__init__(self, parent, **options)
         Label(self, text=title).pack(side=TOP)
         self.var = StringVar()
@@ -43,27 +49,35 @@ class RadioFrame(Frame):
 
 class ModelFrame(Frame):
     """
-    Creates a frame that stores and manages the button menu for selecting the 
+    Creates a frame that stores and manages the button menu for selecting the
     number of nuclei.
+
+    TODO: Maybe this also doesn't need to be a class, but less clear. It "is
+    a " frame that "has a" dict, few constants, an __init__, and one function.
     """
 
-    def __init__(self, parent, controller, toolbar, **options):
+    def __init__(self, parent, controller, toolframe, **options):
+        """
+
+        :param parent: parent widget
+        :param controller: the View's controller
+        :param toolframe: the frame that the toolbars (selected by the radio
+        buttons) will be packed into
+        """
         Frame.__init__(self, parent, **options)
         self.pack(side=TOP, anchor=N, expand=YES, fill=X)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
         self.controller = controller
-        self.toolbar = toolbar
+        self.toolframe = toolframe
         self.add_abc_buttons()
-        self.active_bar_dict = {'abc': self.ab}
-        self.currentframe = 'abc'
+
         self.currentbar = self.ab  # On program start, simulation set to ABq
         self.currentbar.grid(sticky=W)
-        # self.currentbar.request_plot()  # Moved to View.initialize
 
     def add_abc_buttons(self):
-        """Populates the frame with a RadioFrame for selecting the number of 
+        """Populates ModelFrame with a RadioFrame for selecting the number of
         nuclei and the corresponding toolbar.
         """
         abc_buttons = (('2', lambda: self.select_toolbar(self.ab)),
@@ -78,20 +92,25 @@ class ModelFrame(Frame):
                                       title='Number of Spins')
         self.ABC_Buttons.grid(row=0, column=0, sticky=N)
 
-        self.ab = AB_Bar(self.toolbar, controller=self.controller)
-        self.spin3 = nSpinBar(self.toolbar, controller=self.controller, n=3)
-        self.spin4 = nSpinBar(self.toolbar, controller=self.controller, n=4)
-        self.spin5 = nSpinBar(self.toolbar, controller=self.controller, n=5)
-        self.spin6 = nSpinBar(self.toolbar, controller=self.controller, n=6)
-        self.spin7 = nSpinBar(self.toolbar, controller=self.controller, n=7)
-        self.spin8 = nSpinBar(self.toolbar, controller=self.controller, n=8)
+        self.ab = AB_Bar(self.toolframe, controller=self.controller)
+        self.spin3 = nSpinBar(self.toolframe, controller=self.controller, n=3)
+        self.spin4 = nSpinBar(self.toolframe, controller=self.controller, n=4)
+        self.spin5 = nSpinBar(self.toolframe, controller=self.controller, n=5)
+        self.spin6 = nSpinBar(self.toolframe, controller=self.controller, n=6)
+        self.spin7 = nSpinBar(self.toolframe, controller=self.controller, n=7)
+        self.spin8 = nSpinBar(self.toolframe, controller=self.controller, n=8)
 
     def select_toolbar(self, toolbar):
+        """When called by a RadioButton, hides the old toolbar, shows the new
+        toolbar, and requests that the plot be refreshed."
+
+        :param toolbar: the toolbar (nSpinBar or AB_Bar object) that was
+        selected by the RadioButton
+        """
         self.currentbar.grid_remove()
         self.currentbar = toolbar
         self.currentbar.grid(sticky=W)
-        # record current bar of currentframe:
-        self.active_bar_dict[self.currentframe] = toolbar
+
         try:
             self.currentbar.request_plot()
         except ValueError:
@@ -101,7 +120,7 @@ class ModelFrame(Frame):
 class ToolBar(Frame):
     """
     A frame object that contains entry widgets, a dictionary of
-    their current contents, and a function to call the controller for an update.
+    their current contents, and a function to call the controller for an update
     """
 
     def __init__(self, parent=None, **options):
@@ -109,6 +128,9 @@ class ToolBar(Frame):
         self.vars = {}
 
     def request_plot(self):
+        """Any class inheriting from ToolBar needs to redefine this function.
+        TODO: believe there is a Python mechanism to force a required 
+        function to be defined in children. Consider implementing if true."""
         print('Sending to dummy_model: ', self.vars)
 
 
@@ -118,6 +140,7 @@ class nSpinBar(Frame):
     array for frequencies, a 2-D array for coupling constants, and a button
     to pop up
     Arguments:
+        controller: controller object with a 
         n: number of spins
     Dependencies:
         nmrmath.nspinspec
@@ -175,10 +198,6 @@ class nSpinBar(Frame):
 
     def request_plot(self):
         self.controller.update_view_plot('QM', (self.v[0, :], self.j))
-        # x, y = tkplot(spectrum)
-        # canvas.clear()
-        # canvas.plot(x, y)
-
 
 
 class VarBox(Frame):
@@ -189,8 +208,8 @@ class VarBox(Frame):
     in a popup.
     Looking ahead: trick may be linking their contents with the calls to
     nmrmath. Also, need to make sure floats, not ints, are returned. Can
-    change the is_number_or_empty routine so that if base entered, replaced with
-    float?
+    change the is_number_or_empty routine so that if base entered, replaced
+    with float?
     Inputs:
     -text: appears above the entry box
     -default: default value in entry
@@ -581,9 +600,9 @@ class View(Frame):
         TopFrame.grid_columnconfigure(0, weight=1)
 
         self.Models = ModelFrame(parent=sideFrame,
-                            controller=self.controller,
-                            toolbar=TopFrame,
-                            relief=SUNKEN, borderwidth=1)
+                                 controller=self.controller,
+                                 toolframe=TopFrame,
+                                 relief=SUNKEN, borderwidth=1)
         self.Models.pack(side=TOP, expand=YES, fill=X, anchor=N)
         Label(sideFrame, text='placeholder').pack()
         self.figure = Figure(figsize=(5, 4), dpi=100)
