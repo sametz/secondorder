@@ -44,7 +44,7 @@ class Controller:
         self.view.pack(expand=tk.YES, fill=tk.BOTH)
         self.view.initialize()
 
-    def update_view_plot(self, simulation, data):
+    def update_view_plot(self, *data):
         """Queries the model for a simulation using data, then tells the view
         to plot the results.
 
@@ -56,16 +56,11 @@ class Controller:
             format required by the model. This may not be proper MVC 
             separation of concerns, however.
         """
-        if simulation == 'AB':
-            plotdata = tkplot(AB(*data))
-            self.view.clear()
-            self.view.plot(*plotdata)
-        elif simulation == 'QM':
-            plotdata = tkplot(nspinspec(*data))
-            self.view.clear()
-            self.view.plot(*plotdata)
-        else:
-            print('Simulation not recognized.')
+
+        plotdata = tkplot(nspinspec(*data))
+        self.view.clear()
+        self.view.plot(*plotdata)
+
 
 if __name__ == '__main__':
     root = tk.Tk()

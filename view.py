@@ -181,7 +181,7 @@ class nSpinBar(Frame):
         datagrid.pack()
 
     def request_plot(self):
-        self.controller.update_view_plot('QM', (self.v[0, :], self.j))
+        self.controller.update_view_plot(self.v[0, :], self.j)
 
 
 class ArrayFrame(Frame):
