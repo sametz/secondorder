@@ -17,6 +17,14 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 
+def spin2():
+    v = np.array([150-7.5, 150+7.5])
+    J = lil_matrix((2, 2))
+    J[0, 1] = 12
+    J = J + J.T
+    return v, J
+
+
 def spin3():
     v = np.array([115, 140, 190])
     J = lil_matrix((3, 3))
@@ -142,6 +150,7 @@ def spin8():
     return v, J
 
 
+# following not needed? delete?
 def windnmr_defaults():
     """
     Creates a package of spin systems that are defaults in WINDNMR.
@@ -162,7 +171,7 @@ def getWINDNMRdefault(n):
     and not a sparse matrix (since sparse matrices are no longer used). Was
     easier to convert the above data this way than to rewrite it all.
     """
-    spinsystem = [(), (), (), spin3(), spin4(), spin5(), spin6(), spin7(),
+    spinsystem = [(), (), spin2(), spin3(), spin4(), spin5(), spin6(), spin7(),
                   spin8()]
 
     # Changes to modules require frequency to be a (0,n) 2D array, and J to
