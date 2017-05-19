@@ -47,6 +47,7 @@ class RadioFrame(Frame):
         self.var.set(buttons[0][0])  # turns the top button on
 
 
+# TODO: code in next class seems repetetive. Refactor?
 class ModelFrame(Frame):
     """
     Creates a frame that stores and manages the button menu for selecting the
@@ -73,14 +74,14 @@ class ModelFrame(Frame):
         self.toolframe = toolframe
         self.add_abc_buttons()
 
-        self.currentbar = self.ab  # On program start, simulation set to ABq
+        self.currentbar = self.spin2  # initialize with 2-spin system (AB)
         self.currentbar.grid(sticky=W)
 
     def add_abc_buttons(self):
         """Populates ModelFrame with a RadioFrame for selecting the number of
         nuclei and the corresponding toolbar.
         """
-        abc_buttons = (('2', lambda: self.select_toolbar(self.ab)),
+        abc_buttons = (('2', lambda: self.select_toolbar(self.spin2)),
                        ('3', lambda: self.select_toolbar(self.spin3)),
                        ('4', lambda: self.select_toolbar(self.spin4)),
                        ('5', lambda: self.select_toolbar(self.spin5)),
@@ -92,7 +93,7 @@ class ModelFrame(Frame):
                                       title='Number of Spins')
         self.ABC_Buttons.grid(row=0, column=0, sticky=N)
 
-        self.ab = AB_Bar(self.toolframe, controller=self.controller)
+        self.spin2 = nSpinBar(self.toolframe, controller=self.controller, n=2)
         self.spin3 = nSpinBar(self.toolframe, controller=self.controller, n=3)
         self.spin4 = nSpinBar(self.toolframe, controller=self.controller, n=4)
         self.spin5 = nSpinBar(self.toolframe, controller=self.controller, n=5)
@@ -534,37 +535,6 @@ class ArrayBox(Frame):
             self.master.v_obj[self.col].value.set(value)
 
 
-class AB_Bar(ToolBar):
-    """
-    Creates a bar of AB quartet inputs. Currently assumes "canvas" is the
-    MPLGraph instance.
-    Dependencies: nmrplot.tkplot, nmrmath.AB
-    """
-
-    def __init__(self, parent, controller, **options):
-        ToolBar.__init__(self, parent, **options)
-        self.controller = controller
-        Jab = VarBox(self, name='Jab', default=12.00)
-        Vab = VarBox(self, name='Vab', default=15.00)
-        Vcentr = VarBox(self, name='Vcentr', default=150)
-        Jab.pack(side=LEFT)
-        Vab.pack(side=LEFT)
-        Vcentr.pack(side=LEFT)
-        # initialize self.vars with toolbox defaults
-        for child in self.winfo_children():
-            child.to_dict()
-
-    def request_plot(self):
-        pass
-        _Jab = self.vars['Jab']
-        _Vab = self.vars['Vab']
-        _Vcentr = self.vars['Vcentr']
-        self.controller.update_view_plot('AB', (_Jab, _Vab, _Vcentr))
-        # x, y = tkplot(spectrum)
-        # canvas.clear()
-        # canvas.plot(x, y)
-
-
 class MPLgraph(FigureCanvasTkAgg):
     def __init__(self, figure, master=None, **options):
         FigureCanvasTkAgg.__init__(self, figure, master, **options)
@@ -591,6 +561,8 @@ class View(Frame):
         self.parent = parent
         self.controller = controller
 
+        # If only Models gets packed in sideFrame, sideFrame may not be needed.
+        # Keeping for now in case other widgets get added.
         sideFrame = Frame(self, relief=RIDGE, borderwidth=3)
         sideFrame.pack(side=LEFT, expand=NO, fill=Y)
 
