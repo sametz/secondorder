@@ -21,6 +21,27 @@ The format is inspired by `Keep a Changelog <http://keepachangelog.com/en/0.3.0/
 * **Version 1.0.0 release**: a minimal app suitable for educational use and not requiring execution from the command line interface.
 
 
+0.2.0 - 2017-05-19 (pre-alpha)
+------------------------------
+
+Added
+^^^^^
+
+* Default values in initialize.py for 2-spin system
+
+Changed
+^^^^^^^
+
+* 2-spin simulation changed from non-quantum mechanical calculation to quantum mechanical. GUI toolbar for 2-spin now consistent with those for 3+
+spins.
+
+* App refactored along model-view-controller design pattern.
+
+Deleted
+^^^^^^^
+
+* Code relating to the non-Quantum mechanical calculation of 2-spin system (AB quartet), including GUI widgets
+
 0.1.0 - 2017-05-15 (pre-alpha release)
 --------------------------------------
 
