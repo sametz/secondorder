@@ -1,8 +1,9 @@
 """
-This module uses the default WINDNMR spinsystem data for 3-spin through
-8-spin second-order calculations, and creates a list of (frequency, 
-J couplings) tuples. The WINDNMR defaults were chosen because they allow 
-secondorder's output to be visually checked against WINDNMR's output.
+This module uses the default WINDNMR spinsystem variables for 3-spin through
+8-spin second-order calculations, plus the default AB quartet variables for 
+2-spin calculations, and creates a list of (frequency, J couplings) tuples. 
+The WINDNMR defaults were chosen because they allow secondorder's output to be 
+visually checked against WINDNMR's output.
 
 The frequencies v are in numpy arrays.
 The J couplings are in sparse matrices. J[i,j] corresponds to the coupling
@@ -148,18 +149,6 @@ def spin8():
     J[6, 7] = 12
     J = J + J.T
     return v, J
-
-
-# following not needed? delete?
-def windnmr_defaults():
-    """
-    Creates a package of spin systems that are defaults in WINDNMR.
-    Currently this returns a list of all the 4-spin to 8-spin systems in the
-    second-order option ("ABC...") of WINDNMR.
-    Returns: a list of (frequency array, J array) tuples.
-    """
-    spinsystem = [(), (), (), (), spin4(), spin5(), spin6(), spin7(), spin8()]
-    return spinsystem
 
 
 def getWINDNMRdefault(n):

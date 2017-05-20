@@ -9,9 +9,10 @@ Contains:
                 the view.
 """
 import tkinter as tk
-from secondorder.model.nmrmath import AB, nspinspec
+
+from secondorder.GUI.view import View
+from secondorder.model.nmrmath import nspinspec
 from secondorder.model.nmrplot import tkplot
-from view import View
 
 
 class Controller:

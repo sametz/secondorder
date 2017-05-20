@@ -11,9 +11,8 @@ Contains:
 
 import tkinter as tk
 
-from view_old import View
-
 from MVCdemo import model
+from cruft.view_old import View
 
 
 class Controller:

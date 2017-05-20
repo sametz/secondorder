@@ -14,10 +14,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
 
 from matplotlib.figure import Figure
-from secondorder.model.nmrplot import tkplot
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
-from secondorder.model.nmrmath import AB, nspinspec
 
 up_arrow = u"\u21e7"
 down_arrow = u"\u21e9"
@@ -359,7 +357,8 @@ class View(Frame):
 
 if __name__ == '__main__':
     # Create the main application window:
-    import controller
+    from secondorder.controller import controller
+
     root = Tk()
     root.title('secondorder')  # working title only!
     Controller = controller.Controller(root)
