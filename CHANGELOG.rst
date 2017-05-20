@@ -32,8 +32,7 @@ Added
 Changed
 ^^^^^^^
 
-* 2-spin simulation changed from non-quantum mechanical calculation to
-quantum mechanical. GUI toolbar for 2-spin now consistent with those for 3+
+* 2-spin simulation changed from non-quantum mechanical calculation to quantum mechanical. GUI toolbar for 2-spin now consistent with those for 3+
 spins.
 
 * App refactored along model-view-controller design pattern.
@@ -41,8 +40,7 @@ spins.
 Deleted
 ^^^^^^^
 
-* Code relating to the non-Quantum mechanical calculation of 2-spin system
-(AB quartet), including GUI widgets
+* Code relating to the non-Quantum mechanical calculation of 2-spin system (AB quartet), including GUI widgets
 
 0.1.0 - 2017-05-15 (pre-alpha release)
 --------------------------------------
