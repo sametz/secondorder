@@ -42,6 +42,7 @@ def adder(x, plist, Q=2):
         total += lorentz2(x, v, i, Q)
     return total
 
+# nmr plot function retained for now--may be useful for tests.
 
 # def nmrplot(spectrum, y=1):
 #     """
@@ -69,4 +70,3 @@ def tkplot(spectrum, y=4):
     x = np.linspace(l_limit, r_limit, 2400)
     y = adder(x, spectrum, Q=y)
     return x, y
-

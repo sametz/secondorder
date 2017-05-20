@@ -1,10 +1,7 @@
 """
-The main GUI, to be run as the main application.
+The main GUI for secondorder.
 
-TODO: WINDNMR defaults should probably be passed from Controller via
-View.initialize()
-
-TODO: implement line widths
+TODO: implement line widths.
 """
 import matplotlib
 import numpy as np

@@ -1,5 +1,5 @@
 """
-The controller can be executed as the main secondorder app. 
+The controller for the secondorder app. 
 
 Assumes a tkinter view.
 
