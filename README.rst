@@ -1,4 +1,4 @@
-secondorder v0.1.0 (pre-alpha)
+secondorder v0.2.0 (pre-alpha)
 ******************************
 
 **secondorder** will graphically simulate the NMR spectra for any number of coupled
@@ -30,9 +30,7 @@ installation, you can download the project folders, install the requirements in 
 TODO
 ====
 
-See CHANGELOG.rst for the map towards a version 1.0. In addition, there is
-much code refactoring (e.g. to a Model-View-Controller architecture) and
-cleanup required.
+See CHANGELOG.rst for the map towards a version 1.0.
 
 Feedback
 ========

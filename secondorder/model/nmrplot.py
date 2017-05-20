@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -42,24 +42,25 @@ def adder(x, plist, Q=2):
         total += lorentz2(x, v, i, Q)
     return total
 
+# nmr plot function retained for now--may be useful for tests.
 
-def nmrplot(spectrum, y=1):
-    """
-    A no-frills routine that plots spectral simulation data.
-    :param spectrum: A list of (frequency, intensity) tuples
-    :param y: max intensity
-    """
-    spectrum.sort()  # Could become costly with larger spectra
-    l_limit = spectrum[0][0] - 50
-    r_limit = spectrum[-1][0] + 50
-    x = np.linspace(l_limit, r_limit, 800)
-    plt.ylim(-0.1, y)
-    plt.gca().invert_xaxis()  # reverses the x axis
-    # noinspection PyTypeChecker
-    plt.plot(x, adder(x, spectrum, Q=4))
-
-    plt.show()
-    return
+# def nmrplot(spectrum, y=1):
+#     """
+#     A no-frills routine that plots spectral simulation data.
+#     :param spectrum: A list of (frequency, intensity) tuples
+#     :param y: max intensity
+#     """
+#     spectrum.sort()  # Could become costly with larger spectra
+#     l_limit = spectrum[0][0] - 50
+#     r_limit = spectrum[-1][0] + 50
+#     x = np.linspace(l_limit, r_limit, 800)
+#     plt.ylim(-0.1, y)
+#     plt.gca().invert_xaxis()  # reverses the x axis
+#     # noinspection PyTypeChecker
+#     plt.plot(x, adder(x, spectrum, Q=4))
+#
+#     plt.show()
+#     return
 
 
 def tkplot(spectrum, y=4):
@@ -69,4 +70,3 @@ def tkplot(spectrum, y=4):
     x = np.linspace(l_limit, r_limit, 2400)
     y = adder(x, spectrum, Q=y)
     return x, y
-
