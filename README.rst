@@ -1,4 +1,4 @@
-secondorder v0.1.0 (pre-alpha)
+secondorder v0.2.0 (pre-alpha)
 ******************************
 
 **secondorder** will graphically simulate the NMR spectra for any number of coupled
