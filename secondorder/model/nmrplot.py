@@ -38,32 +38,50 @@ def add_signals(linspace, peaklist, w):
 
 
 
+# scheduled for deletion
+# def lorentz2(v, v0, I, Q=1):
+#     """
+#     Modified Lorentzian function. T2 replaced by separate inputs for intensity
+#     and line width.
+#     :param v:  the current frequency being calculated (x coordinate)
+#     :param v0: the exact frequency of the signal that is
+#         being converted to a Lorentzian distribution
+#     :param I:  max intensity
+#     :param Q:  fudge factor for line width (defaults to 1)
+#     """
+#     pi = np.pi
+#     return I / (pi * (1 + (Q**2) * ((v - v0)**2)))
+#
+#
+# def adder(x, plist, Q=2):
+#     """
+#     :param x: the x coordinate (relative frequency in Hz)
+#     :param plist: a list of tuples of peak data (frequency, intensity)
+#     :param Q: the line width "fudge factor" used by lorentz2
+#     returns: the sum of the peak Lorentzian functions at x
+#     """
+#     total = 0
+#     for v, i in plist:
+#         total += lorentz2(x, v, i, Q)
+#     return total
+#
+#
+# def tkplot_old(spectrum, y=4):
+#     spectrum.sort()
+#     r_limit = spectrum[-1][0] + 50
+#     l_limit = spectrum[0][0] - 50
+#     x = np.linspace(l_limit, r_limit, 2400)
+#     y = adder(x, spectrum, Q=y)
+#     return x, y
 
-def lorentz2(v, v0, I, Q=1):
-    """
-    Modified Lorentzian function. T2 replaced by separate inputs for intensity
-    and line width.
-    :param v:  the current frequency being calculated (x coordinate)
-    :param v0: the exact frequency of the signal that is
-        being converted to a Lorentzian distribution
-    :param I:  max intensity
-    :param Q:  fudge factor for line width (defaults to 1)
-    """
-    pi = np.pi
-    return I / (pi * (1 + (Q**2) * ((v - v0)**2)))
 
-
-def adder(x, plist, Q=2):
-    """
-    :param x: the x coordinate (relative frequency in Hz)
-    :param plist: a list of tuples of peak data (frequency, intensity)
-    :param Q: the line width "fudge factor" used by lorentz2
-    returns: the sum of the peak Lorentzian functions at x
-    """
-    total = 0
-    for v, i in plist:
-        total += lorentz2(x, v, i, Q)
-    return total
+def tkplot(spectrum, w=0.5):
+    spectrum.sort()
+    r_limit = spectrum[-1][0] + 50
+    l_limit = spectrum[0][0] - 50
+    x = np.linspace(l_limit, r_limit, 2400)
+    y = add_signals(x, spectrum, w)
+    return x, y
 
 # nmr plot function retained for now--may be useful for tests.
 
@@ -84,21 +102,3 @@ def adder(x, plist, Q=2):
 #
 #     plt.show()
 #     return
-
-
-def tkplot_old(spectrum, y=4):
-    spectrum.sort()
-    r_limit = spectrum[-1][0] + 50
-    l_limit = spectrum[0][0] - 50
-    x = np.linspace(l_limit, r_limit, 2400)
-    y = adder(x, spectrum, Q=y)
-    return x, y
-
-
-def tkplot(spectrum, w=0.5):
-    spectrum.sort()
-    r_limit = spectrum[-1][0] + 50
-    l_limit = spectrum[0][0] - 50
-    x = np.linspace(l_limit, r_limit, 2400)
-    y = add_signals(x, spectrum, w)
-    return x, y
