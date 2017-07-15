@@ -7,3 +7,4 @@ from secondorder.model import nmrmath
 
 
 # Need to think about this more carefully before implementation.
+# For now will manually copy accepted outputs into accepted_data.py
