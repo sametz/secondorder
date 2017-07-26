@@ -1,4 +1,4 @@
-secondorder v0.2.0 (pre-alpha)
+secondorder v0.3.0 (pre-alpha)
 ******************************
 
 **secondorder** will graphically simulate the NMR spectra for any number of coupled
@@ -23,7 +23,7 @@ I could explain it to another organic chemist.
 Installation and Use
 ====================
 
-The project is pre-alpha and subject to change. The master branch should
+The project is alpha and subject to change. The master branch should
 maintain a functional program. If you're curious, and have a Python 3
 installation, you can download the project folders, install the requirements in requirements.txt if necessary, and run main.py from the command line.
 
@@ -43,5 +43,4 @@ Acknowledgements
 
 This project is inspired by Hans Reich's WINDNMR application. **secondorder**
 initializes its simulations with the same variables as WINDNMR's defaults,
-to verify that the simulation is performing correctly (since formal unit
-testing is not implemented yet, hence the pre-alpha status).
+to verify that the simulation is performing correctly.

@@ -20,6 +20,20 @@ The format is inspired by `Keep a Changelog <http://keepachangelog.com/en/0.3.0/
 
 * **Version 1.0.0 release**: a minimal app suitable for educational use and not requiring execution from the command line interface.
 
+0.3.0 - 2017-07-26 (alpha)
+--------------------------
+
+Added
+^^^^^
+
+* tests/model/test_nmrmath.py and test_nmrplot.py to test the model's output against accepted results (stored in tests/model/accepted_data.py)
+
+Changed
+^^^^^^^
+
+* Lorentzian refactored to take a parameter (w) for width of peak at half height, allowing future implementation of this parameter in the GUI.
+
+* Refactored routine that computes the total spectrum by adding the Lorentzian lineshapes for each signal (model.nmrplot.add_signals).
 
 0.2.0 - 2017-05-19 (pre-alpha)
 ------------------------------
@@ -32,8 +46,7 @@ Added
 Changed
 ^^^^^^^
 
-* 2-spin simulation changed from non-quantum mechanical calculation to quantum mechanical. GUI toolbar for 2-spin now consistent with those for 3+
-spins.
+* 2-spin simulation changed from non-quantum mechanical calculation to quantum mechanical. GUI toolbar for 2-spin now consistent with those for 3+ spins.
 
 * App refactored along model-view-controller design pattern.
 
