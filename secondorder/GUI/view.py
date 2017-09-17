@@ -5,14 +5,15 @@ TODO: implement line widths.
 """
 import matplotlib
 import numpy as np
+from secondorder.initialize import getWINDNMRdefault
+from tkinter import *
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
     NavigationToolbar2TkAgg
 
 from matplotlib.figure import Figure
-from secondorder.initialize import getWINDNMRdefault
-from tkinter import *
+
 
 up_arrow = u"\u21e7"
 down_arrow = u"\u21e9"
@@ -132,11 +133,17 @@ class nSpinBar(Frame):
         self.controller = controller
         self.v_obj = np.zeros(n, dtype=object)
         self.v, self.j = getWINDNMRdefault(n)
+        self.w_array = np.array([[0.5]])
+
         for freq in range(n):
             vbox = ArrayBox(self, a=self.v, coord=(0, freq),
                             name='V' + str(freq + 1))
             self.v_obj[freq] = vbox
             vbox.pack(side=LEFT)
+
+        wbox = ArrayBox(self, a=self.w_array, coord=(0, 0), name="W")
+        wbox.pack(side=LEFT)
+
         vj_button = Button(self, text="Enter Js",
                            command=lambda: self.vj_popup(n))
         vj_button.pack(side=LEFT, expand=N, fill=NONE)
@@ -176,7 +183,8 @@ class nSpinBar(Frame):
         datagrid.pack()
 
     def request_plot(self):
-        self.controller.update_view_plot(self.v[0, :], self.j)
+        self.controller.update_view_plot(self.v[0, :], self.j,
+                                         self.w_array[0,0])
 
 
 class ArrayFrame(Frame):
@@ -193,6 +201,84 @@ class ArrayFrame(Frame):
         Frame.__init__(self, parent, **options)
         self.request_plot = func
         self.v_obj = v_obj
+
+
+class VarBox(Frame):
+    """
+    Eventually will emulate what the Reich entry box does, more or less.
+    Idea is to fill the VarFrame with these modules.
+    Current version: checks that only numbers are entered; returns contents
+    in a popup.
+    Looking ahead: trick may be linking their contents with the calls to
+    nmrmath. Also, need to make sure floats, not ints, are returned. Can
+    change the is_number routine so that if integer entered, replaced with
+    float?
+    Inputs:
+    -text: appears above the entry box
+    -default: default value in entry
+    """
+    def __init__(self, parent=None, name='', default=0.00, **options):
+        Frame.__init__(self, parent, relief=RIDGE, borderwidth=1, **options)
+        Label(self, text=name).pack(side=TOP)
+        self.widgetName = name  # will be key in dictionary
+
+        # Entries will be limited to numerical
+        ent = Entry(self, width=7,
+                    validate='key')  # check for number on keypress
+        ent.pack(side=TOP, fill=X)
+        self.value = StringVar()
+        ent.config(textvariable=self.value)
+        self.value.set(str(default))
+
+        # Default behavior: both return and tab will shift focus to next
+        # widget; only save data and ping model if a change is made
+        ent.bind('<Return>', lambda event: self.on_return(event))
+        ent.bind('<Tab>', lambda event: self.on_tab())
+
+        # check on each keypress if new result will be a number
+        ent['validatecommand'] = (self.register(self.is_number), '%P')
+        # sound 'bell' if bad keypress
+        ent['invalidcommand'] = 'bell'
+
+    @staticmethod
+    def is_number(entry):
+        """
+        tests to see if entry is acceptable (either empty, or able to be
+        converted to a float.)
+        """
+        if not entry:
+            return True  # Empty string: OK if entire entry deleted
+        try:
+            float(entry)
+            return True
+        except ValueError:
+            return False
+
+    def entry_is_changed(self):
+        return self.master.vars[self.widgetName] != float(self.value.get())
+
+    def on_return(self, event):
+        if self.entry_is_changed():
+            self.to_dict()
+            self.master.call_model()
+        event.widget.tk_focusNext().focus()
+
+    def on_tab(self):
+        if self.entry_is_changed():
+            self.to_dict()
+            self.master.call_model()
+
+    def to_dict(self):
+        """
+        Records widget's contents to the container's dictionary of
+        values, filling the entry with 0.00 if it was empty.
+        """
+        if not self.value.get():  # if entry left blank,
+            self.value.set(0.00)  # fill it with zero
+        # Add the widget's status to the container's dictionary
+        self.master.vars[self.widgetName] = float(self.value.get())
+
+
 
 
 class ArrayBox(Frame):
