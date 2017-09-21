@@ -57,8 +57,8 @@ class Controller:
             format required by the model. This may not be proper MVC 
             separation of concerns, however.
         """
-
-        plotdata = tkplot(nspinspec(*data))
+        v, j, w = data
+        plotdata = tkplot(nspinspec(v, j), w)
         self.view.clear()
         self.view.plot(*plotdata)
 
