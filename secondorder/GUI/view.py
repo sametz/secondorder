@@ -1,12 +1,12 @@
 """
 The main GUI for secondorder.
-
-TODO: implement line widths.
 """
 import matplotlib
 import numpy as np
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
+from .toolbars import SecondOrderBar
+from .widgets import VBox
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
@@ -89,7 +89,11 @@ class ModelFrame(Frame):
                                       title='Number of Spins')
         self.ABC_Buttons.grid(row=0, column=0, sticky=N)
 
-        self.spin2 = nSpinBar(self.toolframe, controller=self.controller, n=2)
+        # To test toolbar/widget refactoring, spin2 will be altered
+        # self.spin2 = nSpinBar(self.toolframe, controller=self.controller, n=2)
+        self.spin2 = SecondOrderBar(self.toolframe, controller=self.controller,
+                                 n=2)
+
         self.spin3 = nSpinBar(self.toolframe, controller=self.controller, n=3)
         self.spin4 = nSpinBar(self.toolframe, controller=self.controller, n=4)
         self.spin5 = nSpinBar(self.toolframe, controller=self.controller, n=5)
@@ -141,7 +145,7 @@ class nSpinBar(Frame):
             self.v_obj[freq] = vbox
             vbox.pack(side=LEFT)
 
-        wbox = ArrayBox(self, a=self.w_array, coord=(0, 0), name="W")
+        wbox = VBox(self, a=self.w_array, coord=(0, 0), name="W")
         wbox.pack(side=LEFT)
 
         vj_button = Button(self, text="Enter Js",
@@ -277,8 +281,6 @@ class VarBox(Frame):
             self.value.set(0.00)  # fill it with zero
         # Add the widget's status to the container's dictionary
         self.master.vars[self.widgetName] = float(self.value.get())
-
-
 
 
 class ArrayBox(Frame):
