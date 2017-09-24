@@ -5,8 +5,8 @@ import matplotlib
 import numpy as np
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
-from .toolbars import SecondOrderBar
-from .widgets import VBox
+from .toolbars import SecondOrderSpinBar
+from .widgets import ArrayBox
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, \
@@ -91,7 +91,8 @@ class ModelFrame(Frame):
 
         # To test toolbar/widget refactoring, spin2 will be altered
         # self.spin2 = nSpinBar(self.toolframe, controller=self.controller, n=2)
-        self.spin2 = SecondOrderBar(self.toolframe, controller=self.controller,
+        self.spin2 = SecondOrderSpinBar(self.toolframe,
+                                      controller=self.controller,
                                  n=2)
 
         self.spin3 = nSpinBar(self.toolframe, controller=self.controller, n=3)
@@ -145,7 +146,7 @@ class nSpinBar(Frame):
             self.v_obj[freq] = vbox
             vbox.pack(side=LEFT)
 
-        wbox = VBox(self, a=self.w_array, coord=(0, 0), name="W")
+        wbox = ArrayBox(self, a=self.w_array, coord=(0, 0), name="W")
         wbox.pack(side=LEFT)
 
         vj_button = Button(self, text="Enter Js",
@@ -283,7 +284,7 @@ class VarBox(Frame):
         self.master.vars[self.widgetName] = float(self.value.get())
 
 
-class ArrayBox(Frame):
+class OldArrayBox(Frame):
     """
     A version of VarBox that will save its entry to an array. It will be
     initialized with the provided array, so e.g. if n-spin models are being
