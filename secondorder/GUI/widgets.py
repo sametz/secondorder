@@ -60,10 +60,8 @@ class VBox(Frame):
         return self.a[self.row, self.col] != float(self.value.get())
 
     def on_return(self, event):
-        if self.entry_is_changed():
-            self.to_array()
-            self.master.request_plot()
-        event.widget.tk_focusNext().focus()
+        self.on_focus_out()
+        self.find_next_entry(self.ent).focus()
 
     def on_tab(self, event):
         self.on_focus_out()
@@ -94,9 +92,6 @@ class VBox(Frame):
         self.a[self.row, self.col] = value
         if self.a.shape[0] > 1:  # if more than one row, assume J matrix
             self.a[self.col, self.row] = value  # fill cross-diagonal element
-        else:  # otherwise, assume value is a V
-            print(self.master.v_obj[self.col])
-            self.master.v_obj[self.col].value.set(value)
 
 
 class ArrayBox(Frame):
