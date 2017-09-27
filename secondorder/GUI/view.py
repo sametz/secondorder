@@ -100,7 +100,8 @@ class ModelFrame(Frame):
         self.spin5 = nSpinBar(self.toolframe, controller=self.controller, n=5)
         self.spin6 = nSpinBar(self.toolframe, controller=self.controller, n=6)
         self.spin7 = nSpinBar(self.toolframe, controller=self.controller, n=7)
-        self.spin8 = nSpinBar(self.toolframe, controller=self.controller, n=8)
+        self.spin8 = SecondOrderSpinBar(self.toolframe,
+                                     controller=self.controller, n=8)
 
     def select_toolbar(self, toolbar):
         """When called by a RadioButton, hides the old toolbar, shows the new
@@ -384,7 +385,8 @@ class MPLgraph(FigureCanvasTkAgg):
 
     def plot(self, x, y):
         self.add.plot(x, y)
-        self.f.canvas.draw()  # DRAW IS CRITICAL TO REFRESH
+        # apparently .draw_idle() gives faster refresh than .draw()
+        self.f.canvas.draw_idle()  # DRAW IS CRITICAL TO REFRESH
 
     def clear(self):
         self.add.clear()
