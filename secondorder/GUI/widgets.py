@@ -103,6 +103,31 @@ class EntryFrame(Frame):
         value = float(self.value.get())
         self.stored_value = value
 
+
+class NewArrayBox(EntryFrame):
+    def __init__(self, parent=None, array=[], coord=(0,0),
+                 name='', color='white',
+                 **options):
+        EntryFrame.__init__(self, parent, name, color, **options)
+        self.array = array
+        self.row, self.col = coord
+        self.stored_value = array[self.row, self.col]
+        self.value.set(self.stored_value)
+
+    def save_entry(self):
+        """
+                Records widget's status to the array, filling the entry with
+                0.00 if it was empty.
+                """
+        if not self.value.get():  # if entry left blank,
+            self.value.set(0.00)  # fill it with zero
+        value = float(self.value.get())
+        self.array[self.row, self.col] = value
+        if self.array.shape[0] > 1:  # if more than one row, assume J matrix
+            self.array[self.col, self.row] = value  # fill cross-diagonal
+                                                    # element
+
+
 class ArrayBox(Frame):
     """
     A tkinter Frame that holds a labeled entry widget with added features,
@@ -311,7 +336,7 @@ class ArraySpinBox(Frame):
 
 if __name__ == '__main__':
     import numpy as np
-    dummy_array = np.array([[1, 42]])
+    dummy_array = np.array([[1, 42, 666]])
     root = Tk()
     root.title('test widgets')
 
@@ -321,16 +346,20 @@ if __name__ == '__main__':
 
         def request_plot(self):
             print('TestFrame.request_plot() called')
+            print(dummy_array)
 
     mainwindow = TestFrame(root)
     mainwindow.pack()
 
     baseclass = EntryFrame(mainwindow, name='baseclass')
     baseclass.pack(side=LEFT)
-    nospin = ArrayBox(mainwindow, a=dummy_array, coord=(0, 0),name='V1')
+    nospin = ArrayBox(mainwindow, a=dummy_array, coord=(0, 0), name='V1')
     nospin.pack(side=LEFT)
     spin = ArraySpinBox(mainwindow, a=dummy_array, coord=(0, 1), name='V42')
     spin.pack(side=LEFT)
+    newarray = NewArrayBox(mainwindow, array=dummy_array, coord=(0, 2),
+                           name='V666')
+    newarray.pack(side=LEFT)
 
     # workaround fix for Tk problems and mac mouse/trackpad:
     while True:
