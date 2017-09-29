@@ -19,24 +19,27 @@ class EntryFrame(Frame):
         """
         Frame.__init__(self, parent, relief=RIDGE, borderwidth=0,
                        background=color, **options)
-        self.value = StringVar()
-        self.stored_value = 0.0
-        self.value.set(self.stored_value)
-
+        self.name = name
         # Is the next line needed?
-        self.widgetName = name
+        self.widgetName = self.name
 
+        self.initialize(**options)
         self.add_label(name, color)
         self.add_entry()
         self.bind_entry()
         self.validate_entry()
+
+    def initialize(self, **kwargs):
+        self.value = StringVar()
+        self.stored_value = 0.0
+        self.value.set(self.stored_value)
 
     def add_label(self, name, color):
         Label(self, text=name, bg=color, bd=0).pack(side=TOP)
 
     def add_entry(self):
         self.entry = Entry(self, width=7,
-                    validate='key')  # check for number on keypress)
+                           validate='key')  # check for number on keypress)
         self.entry.pack(side=TOP, fill=X)
         self.entry.config(textvariable=self.value)
 
@@ -105,13 +108,25 @@ class EntryFrame(Frame):
 
 
 class NewArrayBox(EntryFrame):
-    def __init__(self, parent=None, array=[], coord=(0,0),
-                 name='', color='white',
+    def __init__(self, parent=None,
+                 # array=[], coord=(0, 0),
+                 # name='', color='white',
                  **options):
-        EntryFrame.__init__(self, parent, name, color, **options)
+        EntryFrame.__init__(self, parent,
+                            # name, color,
+                            **options)
         self.array = array
         self.row, self.col = coord
         self.stored_value = array[self.row, self.col]
+        self.value.set(self.stored_value)
+
+    def initialize(self,
+                   array=[], coord=(0, 0),
+                   **kwargs):
+        self.array = array
+        self.row, self.col = coord
+        self.value = StringVar()
+        self.stored_value = self.array[self.row, self.col]
         self.value.set(self.stored_value)
 
     def save_entry(self):
@@ -126,6 +141,30 @@ class NewArrayBox(EntryFrame):
         if self.array.shape[0] > 1:  # if more than one row, assume J matrix
             self.array[self.col, self.row] = value  # fill cross-diagonal
                                                     # element
+
+
+class NewArraySpinBox(NewArrayBox):
+    def __init__(self, parent=None, from_=0.00, to=100.00, increment=1,
+                **options):
+        NewArrayBox.__init__(self, parent, **options)
+        self.spinbox_kwargs = {'from_': from_,
+                               'to': to,
+                               'increment': increment}
+        print('Initializing spinbox with kwargs ', self.spinbox_kwargs)
+
+    def add_entry(self):
+        print('Initializing spinbox with kwargs ', self.spinbox_kwargs)
+        self.add_spinbox(**self.spinbox_kwargs)
+
+    def add_spinbox(self, **kwargs):
+        self.entry = Spinbox(self, width=7,
+                             validate='key',  # check for number on keypress
+                             from_=-100000, to=100000, increment=1
+                             # **kwargs
+                             )
+        self.entry.pack(side=TOP, fill=X)
+        self.entry.config(textvariable=self.value)
+
 
 
 class ArrayBox(Frame):
@@ -336,7 +375,7 @@ class ArraySpinBox(Frame):
 
 if __name__ == '__main__':
     import numpy as np
-    dummy_array = np.array([[1, 42, 666]])
+    dummy_array = np.array([[1, 42, 666, 2001]])
     root = Tk()
     root.title('test widgets')
 
@@ -360,6 +399,9 @@ if __name__ == '__main__':
     newarray = NewArrayBox(mainwindow, array=dummy_array, coord=(0, 2),
                            name='V666')
     newarray.pack(side=LEFT)
+    newspinbox = NewArraySpinBox(mainwindow, array=dummy_array, coord=(0, 3),
+                                 name='V2001')
+    newspinbox.pack(side=LEFT)
 
     # workaround fix for Tk problems and mac mouse/trackpad:
     while True:
