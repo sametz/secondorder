@@ -179,7 +179,7 @@ class ArrayBox(EntryFrame):
         self.value = float(self.value_var.get())
         self.array[self.row, self.col] = self.value
         if self.array.shape[0] > 1:  # if more than one row, assume J matrix
-            self.array[self.col, self.row] = value  # fill cross-diagonal
+            self.array[self.col, self.row] = self.value  # fill cross-diagonal
                                                     # element
 
 
