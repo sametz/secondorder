@@ -2,7 +2,7 @@
 import numpy as np
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
-from .widgets import ArrayBox, ArraySpinBox
+from .widgets_refactoring import ArrayBox, ArraySpinBox
 from .frames import ArrayFrame
 
 
@@ -105,12 +105,12 @@ class SecondOrderSpinBar(Frame):
         self.w_array = np.array([[0.5]])
 
         for freq in range(n):
-            vbox = ArraySpinBox(self, a=self.v, coord=(0, freq),
+            vbox = ArraySpinBox(self, array=self.v, coord=(0, freq),
                            name='V' + str(freq + 1))
             self.v_obj[freq] = vbox
             vbox.pack(side=LEFT)
 
-        wbox = ArraySpinBox(self, a=self.w_array, coord=(0, 0), name="W")
+        wbox = ArraySpinBox(self, array=self.w_array, coord=(0, 0), name="W")
         wbox.pack(side=LEFT)
 
         vj_button = Button(self, text="Enter Js",
@@ -134,13 +134,13 @@ class SecondOrderSpinBar(Frame):
 
         for row in range(1, n + 1):
             vtext = "V" + str(row)
-            v = ArrayBox(datagrid, a=self.v,
+            v = ArrayBox(datagrid, array=self.v,
                          coord=(0, row - 1),  # V1 stored in v[0, 0], etc.
                          name=vtext, color='gray90')
             v.grid(row=row, column=0, sticky=NSEW, padx=1, pady=1)
             for col in range(1, n + 1):
                 if col < row:
-                    j = ArrayBox(datagrid, a=self.j,
+                    j = ArrayBox(datagrid, array=self.j,
                                  # J12 stored in j[0, 1] (and j[1, 0]) etc
                                  coord=(col - 1, row - 1),
                                  name="J%d%d" % (col, row))
