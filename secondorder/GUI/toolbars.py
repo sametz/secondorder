@@ -2,7 +2,7 @@
 import numpy as np
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
-from secondorder.GUI.widgets_refactoring import ArrayBox, ArraySpinBox
+from secondorder.GUI.widgets import ArrayBox, ArraySpinBox
 from secondorder.GUI.frames import ArrayFrame
 
 
@@ -16,15 +16,15 @@ class SecondOrderBar(Frame):
         controller: controller object with a
         n: number of spins
     Dependencies:
-        nmrmath.nspinspec
-        initialize.getWINDNMRdefault for WINDNMR default values
-        nmrplot.tkplot for displaying spectrum
+        numpy
+        secondorder.initialize.getWINDNMRdefault for WINDNMR default values
+        secondorder.GUI.widgets for custom ArrayBox and ArraySpinBox widgets
+
     """
 
     def __init__(self, parent=None, controller=None, n=4, **options):
         Frame.__init__(self, parent, **options)
         self.controller = controller
-        # self.n = n
 
         # Store a list of entry widgets for all frequencies
         # (used by vj_popup)
@@ -39,8 +39,8 @@ class SecondOrderBar(Frame):
     def add_frequency_widgets(self, n):
         for freq in range(n):
             vbox = ArrayBox(self, array=self.v, coord=(0, freq),
-                           name='V' + str(freq + 1),
-                           model=self.request_plot)
+                            name='V' + str(freq + 1),
+                            model=self.request_plot)
             self.v_widgets[freq] = vbox
             vbox.pack(side=LEFT)
 
@@ -55,9 +55,16 @@ class SecondOrderBar(Frame):
         vj_button.pack(side=LEFT, expand=N, fill=NONE)
 
     def vj_popup(self, n):
+        """
+        Creates a new Toplevel window that provides entries for both
+        frequencies and J couplings, and updates self.v and self.j when
+        entries change.
+        :param n: number of spins
+        """
         tl = Toplevel()
         Label(tl, text='Second-Order Simulation').pack(side=TOP)
-        datagrid = ArrayFrame(tl, self.request_plot, self.v_widgets)
+        # datagrid = ArrayFrame(tl, self.request_plot, self.v_widgets)
+        datagrid = Frame(tl)
 
         # For gridlines, background set to the line color (e.g. 'black')
         datagrid.config(background='black')
@@ -99,7 +106,10 @@ class SecondOrderBar(Frame):
         self.controller.update_with_dict(**kwargs)
 
 
-class sosb(SecondOrderBar):
+class SecondOrderSpinBar(SecondOrderBar):
+    """A subclass of SecondOrderBar that uses ArraySpinBox widgets for the
+    toolbar.
+    """
     def __init__(self, parent=None,
                  from_=0.00, to=100.00, increment=1, realtime=False,
                  **options):
@@ -119,91 +129,16 @@ class sosb(SecondOrderBar):
             vbox.pack(side=LEFT)
 
 
-class SecondOrderSpinBar(Frame):
-    """
-    A frame object similar to ToolBar that holds n frequency entry boxes, a 1-D
-    array for frequencies, a 2-D array for coupling constants, and a button
-    to pop up a window for entering J values as well as frequencies.
-    Arguments:
-        controller: controller object with a
-        n: number of spins
-    Dependencies:
-        nmrmath.nspinspec
-        initialize.getWINDNMRdefault for WINDNMR default values
-        nmrplot.tkplot for displaying spectrum
-    """
-
-    def __init__(self, parent=None, controller=None, n=4, **options):
-        Frame.__init__(self, parent, **options)
-        self.controller = controller
-        self.v_obj = np.zeros(n, dtype=object)
-        self.v, self.j = getWINDNMRdefault(n)
-        self.w_array = np.array([[0.5]])
-
-        for freq in range(n):
-            vbox = ArraySpinBox(self, array=self.v, coord=(0, freq),
-                           name='V' + str(freq + 1))
-            self.v_obj[freq] = vbox
-            vbox.pack(side=LEFT)
-
-        wbox = ArraySpinBox(self, array=self.w_array, coord=(0, 0), name="W")
-        wbox.pack(side=LEFT)
-
-        vj_button = Button(self, text="Enter Js",
-                           command=lambda: self.vj_popup(n))
-        vj_button.pack(side=LEFT, expand=N, fill=NONE)
-
-    def vj_popup(self, n):
-        tl = Toplevel()
-        Label(tl, text='Second-Order Simulation').pack(side=TOP)
-        datagrid = ArrayFrame(tl, self.request_plot, self.v_obj)
-
-        # For gridlines, background set to the line color (e.g. 'black')
-        datagrid.config(background='black')
-
-        Label(datagrid, bg='gray90').grid(row=0, column=0, sticky=NSEW,
-                                          padx=1, pady=1)
-        for col in range(1, n + 1):
-            Label(datagrid, text='V%d' % col, width=8, height=3,
-                  bg='gray90').grid(
-                row=0, column=col, sticky=NSEW, padx=1, pady=1)
-
-        for row in range(1, n + 1):
-            vtext = "V" + str(row)
-            v = ArrayBox(datagrid, array=self.v,
-                         coord=(0, row - 1),  # V1 stored in v[0, 0], etc.
-                         name=vtext, color='gray90')
-            v.grid(row=row, column=0, sticky=NSEW, padx=1, pady=1)
-            for col in range(1, n + 1):
-                if col < row:
-                    j = ArrayBox(datagrid, array=self.j,
-                                 # J12 stored in j[0, 1] (and j[1, 0]) etc
-                                 coord=(col - 1, row - 1),
-                                 name="J%d%d" % (col, row))
-                    j.grid(row=row, column=col, sticky=NSEW, padx=1, pady=1)
-                else:
-                    Label(datagrid, bg='grey').grid(
-                        row=row, column=col, sticky=NSEW, padx=1, pady=1)
-
-        datagrid.pack()
-
-    def request_plot(self):
-        kwargs = {'v': self.v[0, :],
-                  'j': self.j,
-                  'w': self.w_array[0, 0]}
-        # self.controller.update_view_plot(self.v[0, :], self.j,
-        #                                  self.w_array[0, 0])
-        self.controller.update_with_dict(**kwargs)
-
-
 if __name__ == '__main__':
     dummy_array_1 = np.array([[1, 2, 3]])
     dummy_array_2 = np.array([[11, 12, 13]])
 
 
     class DummyController:
-        def update_with_dict(self, **kwargs):
+        @staticmethod
+        def update_with_dict(**kwargs):
             print(kwargs)
+
 
     dummy_controller = DummyController()
 
@@ -212,10 +147,10 @@ if __name__ == '__main__':
 
     toolbar_1 = SecondOrderBar(root, controller=dummy_controller)
     toolbar_1.pack(side=TOP)
-    toolbar_2 = sosb(root, controller=dummy_controller,
-                     realtime=False,
-                     from_=-10000, to=10000, increment=1
-                     )
+    toolbar_2 = SecondOrderSpinBar(root, controller=dummy_controller,
+                                   realtime=False,
+                                   from_=-10000, to=10000, increment=1
+                                   )
     toolbar_2.pack(side=TOP)
 
     # workaround fix for Tk problems and mac mouse/trackpad:

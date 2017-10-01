@@ -2,6 +2,7 @@
 from tkinter import *
 
 class ArrayFrame(Frame):
+    # Scheduled for deletion
     """
     A frame used for holding a grid of ArrayBox entries, passing their
     request_plot requests up to the provided func, and passing changes to V
