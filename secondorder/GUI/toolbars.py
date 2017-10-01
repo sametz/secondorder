@@ -1,4 +1,4 @@
-"""In progress: excise view.py toolbars to here."""
+"""Custom tkinter frames that hold multiple widgets"""
 import numpy as np
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *

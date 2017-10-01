@@ -1,4 +1,4 @@
-""" In progress: Excise multipurpose widgets from view.py to here"""
+"""Custom widgets composed from standard tkinter widgets"""
 from tkinter import *
 
 
