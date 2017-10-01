@@ -56,28 +56,23 @@ class View(Frame):
         self.add_plot()
 
     def initialize_spinbars(self, **kwargs):
-        self.spin2 = SecondOrderSpinBar(self.TopFrame, n=2, **kwargs)
-        self.spin3 = SecondOrderSpinBar(self.TopFrame, n=3, **kwargs)
-        self.spin4 = SecondOrderSpinBar(self.TopFrame, n=4, **kwargs)
-        self.spin5 = SecondOrderSpinBar(self.TopFrame, n=5, **kwargs)
-        self.spin6 = SecondOrderSpinBar(self.TopFrame, n=6, **kwargs)
-        self.spin7 = SecondOrderSpinBar(self.TopFrame, n=7, **kwargs)
-        self.spin8 = SecondOrderSpinBar(self.TopFrame, n=8, **kwargs)
+        self.spin_range = range(2, 9)  # hardcoded for only 2-8 spins
+        self.spinbars = [SecondOrderSpinBar(self.TopFrame, n=spins,
+                                            **kwargs)
+                         for spins in self.spin_range]
 
-        self.currentbar = self.spin2
+        self.currentbar = self.spinbars[0]  # two spins default
         self.currentbar.grid(sticky=W)
 
     def add_abc_buttons(self):
         """Populates ModelFrame with a RadioFrame for selecting the number of
-                nuclei and the corresponding toolbar.
-                """
-        abc_buttons = (('2', lambda: self.select_toolbar(self.spin2)),
-                       ('3', lambda: self.select_toolbar(self.spin3)),
-                       ('4', lambda: self.select_toolbar(self.spin4)),
-                       ('5', lambda: self.select_toolbar(self.spin5)),
-                       ('6', lambda: self.select_toolbar(self.spin6)),
-                       ('7', lambda: self.select_toolbar(self.spin7)),
-                       ('8', lambda: self.select_toolbar(self.spin8)))
+        nuclei and the corresponding toolbar.
+        """
+        abc_buttons_list = [
+            (str(spins),
+             lambda spins=spins: self.select_toolbar(self.spinbars[spins - 2])
+             ) for spins in self.spin_range]
+        abc_buttons = tuple(abc_buttons_list)
         self.ABC_Buttons = RadioFrame(self.SideFrame,
                                       buttons=abc_buttons,
                                       title='Number of Spins')
