@@ -20,6 +20,27 @@ The format is inspired by `Keep a Changelog <http://keepachangelog.com/en/0.3.0/
 
 * **Version 1.0.0 release**: a minimal app suitable for educational use and not requiring execution from the command line interface.
 
+0.4.0 - 2017-10-01 (alpha)
+--------------------------
+
+Added
+^^^^^
+
+* Linewidth ("W") variable implemented (on toolbar to the left of the "Enter Js" button)
+
+* Implemented a "SpinBox" widget for numerical entries, with up/down arrows for incrementing/decrementing the value in the entry box
+
+Known Issue
+***********
+
+The spectrum refresh lags behind spinbox changes by one click.
+Focusing away from the changed entry should force a refresh.
+
+Changed
+^^^^^^^
+
+Code was massively reorganized and refactored.
+
 0.3.0 - 2017-07-26 (alpha)
 --------------------------
 

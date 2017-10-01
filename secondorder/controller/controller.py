@@ -57,11 +57,35 @@ class Controller:
             format required by the model. This may not be proper MVC 
             separation of concerns, however.
         """
-
-        plotdata = tkplot(nspinspec(*data))
+        v, j, w = data
+        plotdata = tkplot(nspinspec(v, j), w)
         self.view.clear()
         self.view.plot(*plotdata)
 
+    def update_with_dict(self, v, j, w, simulation='QM', **kwargs):
+        """Test version of update_view_plot using **kwargs, not *args.
+
+        Keyword arguments:
+            Simulation: currently only QM for second-order quantum-mechanical
+            calculation (second order). Future expansion may allow 'FO' for
+            first-order simulations as well.
+            v: a 1-D numpy array of frequencies
+            j: a 2-D numpy array of coupling constants (J values)
+            w: line width at half height
+
+        """
+        if not (v.any() and j.any() and w.any()):
+            print('invalid kwargs:')
+            if not v.any():
+                print('v missing')
+            if not j.any():
+                print('j missing')
+            if not w.any():
+                print('w missing')
+        else:
+            plotdata = tkplot(nspinspec(v, j), w)
+            self.view.clear()
+            self.view.plot(*plotdata)
 
 if __name__ == '__main__':
     root = tk.Tk()
