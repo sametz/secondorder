@@ -3,7 +3,6 @@ import numpy as np
 from secondorder.initialize import getWINDNMRdefault
 from tkinter import *
 from secondorder.GUI.widgets import ArrayBox, ArraySpinBox
-from secondorder.GUI.frames import ArrayFrame
 
 
 class SecondOrderBar(Frame):
@@ -111,7 +110,7 @@ class SecondOrderSpinBar(SecondOrderBar):
     toolbar.
     """
     def __init__(self, parent=None,
-                 from_=0.00, to=100.00, increment=1, realtime=False,
+                 from_=-10000, to=10000.00, increment=1, realtime=False,
                  **options):
         self.spinbox_kwargs = {'from_': from_,
                                'to': to,
@@ -127,6 +126,18 @@ class SecondOrderSpinBar(SecondOrderBar):
                                 **self.spinbox_kwargs)
             self.v_widgets[freq] = vbox
             vbox.pack(side=LEFT)
+
+    def add_peakwidth_widget(self):
+        """
+        Currently hard-wired to vary from 0.01 to 100 Hz, with an increment
+        of 0.1 Hz.
+        """
+        wbox = ArraySpinBox(self, array=self.w_array, coord=(0, 0),
+                            name="W",
+                            model=self.request_plot,
+                            from_=0.01, to=100, increment=0.1,
+                            realtime=self.spinbox_kwargs['realtime'])
+        wbox.pack(side=LEFT)
 
 
 if __name__ == '__main__':
