@@ -225,7 +225,11 @@ class ArraySpinBox(ArrayBox):
     def on_release(self):
         if self.realtime:
             self._root().after_cancel(self.button_held_job)
-        self.refresh()
+
+        # A 1-ms delay allows the StringVar to be updated prior to the
+        # entry_is_changed check. See related StackOverflow question:
+        # https://stackoverflow.com/questions/46504930/
+        self.after(1, self.refresh)
 
 
 if __name__ == '__main__':
