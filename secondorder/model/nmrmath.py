@@ -182,4 +182,3 @@ def nspinspec(freqs, couplings):
     nspins = len(freqs)
     H = hamiltonian(freqs, couplings)
     return simsignals(H, nspins)
-
