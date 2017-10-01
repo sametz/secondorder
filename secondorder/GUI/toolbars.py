@@ -97,11 +97,12 @@ class SecondOrderBar(Frame):
         datagrid.pack()
 
     def request_plot(self):
+        # self.controller.update_view_plot(self.v[0, :], self.j,
+        #                                  self.w_array[0, 0])
         kwargs = {'v': self.v[0, :],
                   'j': self.j,
                   'w': self.w_array[0, 0]}
-        # self.controller.update_view_plot(self.v[0, :], self.j,
-        #                                  self.w_array[0, 0])
+
         self.controller.update_with_dict(**kwargs)
 
 
