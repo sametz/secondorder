@@ -14,11 +14,11 @@ from scipy.sparse import kron, csc_matrix, csr_matrix, lil_matrix, bmat
 
 def popcount(n=0):
     """
-    Computes the popcount (binary Hamming weight) of base n
+    Computes the popcount (binary Hamming weight) of integer n
     input:
-        :param n: an base
+        :param n: an integer
     returns:
-        popcount of base (binary Hamming weight)
+        popcount of integer (binary Hamming weight)
 
     """
     return bin(n).count('1')
