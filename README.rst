@@ -1,6 +1,8 @@
 secondorder v0.4.1 (alpha)
 ******************************
 
+.. image:: docs/source/secondorder_screenshot.png
+
 **secondorder** will graphically simulate the NMR spectra for any number of coupled
 spin-1/2 nuclei. The simulation requires the chemical shifts for all
 nuclei, and all J coupling constants. The code has been tested for up to 8

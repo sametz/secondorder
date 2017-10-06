@@ -1,7 +1,5 @@
 """Custom tkinter frames with added features."""
 from tkinter import *
-from secondorder.GUI.toolbars import SecondOrderBar as nSpinBar
-from secondorder.GUI.toolbars import SecondOrderSpinBar
 
 
 class RadioFrame(Frame):
